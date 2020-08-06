@@ -11,20 +11,25 @@ import UIKit
 
 extension ViewController {
     
+    ////////////////////////////// TABLE VIEW CONFIGURATION ////////////////////////////////////////
     func configureTableView() {
         self.view.addSubview(tableView)
         self.tableView.delegate         = self
         self.tableView.dataSource       = self
         self.tableView.rowHeight        = 50
-        self.tableView.register(BarcodeTableViewCell.self, forCellReuseIdentifier: cells.barcodeCell.rawValue)
         self.tableView.backgroundColor  = .clear
+        self.tableView.tableFooterView  = UIView()
+        self.tableView.register(BarcodeTableViewCell.self, forCellReuseIdentifier: cells.barcodeCell.rawValue)
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    
     
     func reloadTableView() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
     }
+    
     
     func pinTableView(y: Int, bottomOffset: Int) {
 //        guard let lastView = self.view.subviews.last else {return}
@@ -44,14 +49,15 @@ extension ViewController {
         self.tableView.removeAllConstraints()
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { [weak self] in
-            if let y = self?.tableViewInitialHeight {
+            if let y = self?.tableViewSingleScanModeHeight {
                 self?.pinTableView(y: y, bottomOffset: 0)
             }
             else {
                 self?.pinTableView(y: 400, bottomOffset: 0)
             }
                 self?.setupSendButton(x: Int((self?.tableView.bounds.width)!) - 100, y: 350)
-                self?.setupCounterButton(x: Int((self?.tableView.bounds.origin.x)!), y: 350)
+                self?.setupCounterButton(x: Int(screen.width) - (self?.counterButtonWidth)!, y: Int((screen.origin.y)))
+                self?.setupStartStopButton(x: Int((self?.tableView.bounds.origin.x)!), y: (self?.tableViewSingleScanModeHeight)! - Int((self?.startStopButton.bounds.height)!))
         }, completion: nil)
 
         // FRAME POOR ALTERNATIVE
@@ -78,14 +84,16 @@ extension ViewController {
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: { [weak self] in
             
-            if let y = self?.tableViewExpandHeight {
-                self?.pinTableView(y: y, bottomOffset: -(self?.buttonsHeight)!)
-            }
-            else {
-                self?.pinTableView(y: 0, bottomOffset: -(self?.buttonsHeight)!)
-            }
+//            if let y = self?.tableViewExpandHeight {
+//                self?.pinTableView(y: y, bottomOffset: -(self?.buttonsHeight)!)
+//            }
+//            else {
+//                self?.pinTableView(y: 0, bottomOffset: -(self?.buttonsHeight)!)
+//            }
+            self?.pinTableView(y: (self?.tableViewFullScreenScanModeHeight)!, bottomOffset: -(self?.buttonsHeight)!)
             self?.setupSendButton(x: Int((self?.tableView.bounds.width)!) - 100, y: Int(screen.height) - (self?.buttonsHeight)!) //50 height of the button
-            self?.setupCounterButton(x: Int((self?.tableView.bounds.origin.x)!), y: Int(screen.height) - (self?.buttonsHeight)!) //50 height of the sendbutton
+            self?.setupCounterButton(x: Int(screen.width) - (self?.counterButtonWidth)!, y: Int((screen.origin.y)))
+            self?.setupStartStopButton(x: Int((self?.tableView.bounds.origin.x)!), y: Int(screen.height) - (self?.buttonsHeight)!)
             
         }, completion: nil)
 

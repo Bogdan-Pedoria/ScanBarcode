@@ -14,3 +14,8 @@ func roundToHundredth(number: Float) -> Float {
     return (number * 1000000 / 10000).rounded() / 100
 }
 //////////////////////////////////////////////////////////////////////////////////////
+
+
+func roundToHundredth(number: Double) -> Double {
+    return (number * 1000000 / 10000).rounded() / 100
+}

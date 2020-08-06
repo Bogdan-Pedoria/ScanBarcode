@@ -7,16 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2629198924DB899800FC756F /* BarcodeEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2629198824DB899800FC756F /* BarcodeEvaluation.swift */; };
 		262E0A6F2489D18600DFC73D /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E0A6E2489D18600DFC73D /* SocketClient.swift */; };
 		262E0A702489D18600DFC73D /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E0A6E2489D18600DFC73D /* SocketClient.swift */; };
 		266844622444136500D1B95E /* TableViewControllerVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266844612444136500D1B95E /* TableViewControllerVCExt.swift */; };
 		266CE32E248B142300515480 /* UIApplicationExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266CE32D248B142300515480 /* UIApplicationExt.swift */; };
 		266CE330248B146500515480 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266CE32F248B146500515480 /* Math.swift */; };
 		266CE333248B16A400515480 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266CE332248B16A400515480 /* Alert.swift */; };
-		267A88FA248424F000412DD9 /* BarcodesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88F9248424F000412DD9 /* BarcodesModel.swift */; };
+		267A88FA248424F000412DD9 /* Barcodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88F9248424F000412DD9 /* Barcodes.swift */; };
 		267A88FC24852F5900412DD9 /* MLKitCameraSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88FB24852F5900412DD9 /* MLKitCameraSetupVCExt.swift */; };
 		267A88FE2485374D00412DD9 /* TVUpdateDelegateVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88FD2485374D00412DD9 /* TVUpdateDelegateVCExt.swift */; };
-		267A89002485394700412DD9 /* VNCameraSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88FF2485394700412DD9 /* VNCameraSetupVCExt.swift */; };
+		267A89002485394700412DD9 /* VNScanerCameraSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88FF2485394700412DD9 /* VNScanerCameraSetupVCExt.swift */; };
 		267A890224854EC500412DD9 /* TableViewSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A890124854EC500412DD9 /* TableViewSetupVCExt.swift */; };
 		268DD1D72443BA4C00CFBC75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268DD1D62443BA4C00CFBC75 /* AppDelegate.swift */; };
 		268DD1D92443BA4C00CFBC75 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268DD1D82443BA4C00CFBC75 /* SceneDelegate.swift */; };
@@ -27,13 +28,16 @@
 		268DD1F12443BA5100CFBC75 /* ScanBarcodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268DD1F02443BA5100CFBC75 /* ScanBarcodeTests.swift */; };
 		268DD1FD2443C29100CFBC75 /* UIViewConstraintsExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268DD1FC2443C29100CFBC75 /* UIViewConstraintsExt.swift */; };
 		268DD2002443C53E00CFBC75 /* BarcodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268DD1FF2443C53E00CFBC75 /* BarcodeTableViewCell.swift */; };
-		26C780E9244400E0000BCD07 /* CameraStartUpVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C780E8244400E0000BCD07 /* CameraStartUpVCExt.swift */; };
+		26AC7B3624907BB200E9547E /* CaptureOutputDelegateVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AC7B3524907BB200E9547E /* CaptureOutputDelegateVCExt.swift */; };
+		26C780E9244400E0000BCD07 /* CameraSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C780E8244400E0000BCD07 /* CameraSetupVCExt.swift */; };
 		26CC28BD2483BA9700F52540 /* VNBarcodeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CC28BC2483BA9700F52540 /* VNBarcodeDetector.swift */; };
 		26CC28BF2483BD0300F52540 /* Globals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CC28BE2483BD0300F52540 /* Globals.swift */; };
+		26CF0DB524AC68DC00051952 /* DrawShapesVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CF0DB424AC68DC00051952 /* DrawShapesVCExt.swift */; };
 		26EA93132485D1F600D51CB8 /* MLBarcodeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA93122485D1F600D51CB8 /* MLBarcodeDetector.swift */; };
 		26EA93152485F4E400D51CB8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 26EA93142485F4E400D51CB8 /* GoogleService-Info.plist */; };
 		26EA93172487297F00D51CB8 /* README.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 26EA93162487297F00D51CB8 /* README.rtf */; };
 		26F3A45C2488866D00C8D318 /* ButtonSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F3A45B2488866D00C8D318 /* ButtonSetupVCExt.swift */; };
+		26F491192490AEAD0096AF58 /* TextRecognitionVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F491182490AEAD0096AF58 /* TextRecognitionVCExt.swift */; };
 		312538BA1BC028B9F0965824 /* Pods_ScanBarcode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6337584DCFA6533928D79074 /* Pods_ScanBarcode.framework */; };
 		97D1906B51AA1D2A10E060AD /* Pods_ScanBarcodeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E623BF50F5CC0E69DB45D587 /* Pods_ScanBarcodeTests.framework */; };
 /* End PBXBuildFile section */
@@ -49,15 +53,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2629198824DB899800FC756F /* BarcodeEvaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeEvaluation.swift; sourceTree = "<group>"; };
 		262E0A6E2489D18600DFC73D /* SocketClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketClient.swift; sourceTree = "<group>"; };
 		266844612444136500D1B95E /* TableViewControllerVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewControllerVCExt.swift; sourceTree = "<group>"; };
 		266CE32D248B142300515480 /* UIApplicationExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExt.swift; sourceTree = "<group>"; };
 		266CE32F248B146500515480 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		266CE332248B16A400515480 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
-		267A88F9248424F000412DD9 /* BarcodesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodesModel.swift; sourceTree = "<group>"; };
+		267A88F9248424F000412DD9 /* Barcodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Barcodes.swift; sourceTree = "<group>"; };
 		267A88FB24852F5900412DD9 /* MLKitCameraSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLKitCameraSetupVCExt.swift; sourceTree = "<group>"; };
 		267A88FD2485374D00412DD9 /* TVUpdateDelegateVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVUpdateDelegateVCExt.swift; sourceTree = "<group>"; };
-		267A88FF2485394700412DD9 /* VNCameraSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VNCameraSetupVCExt.swift; sourceTree = "<group>"; };
+		267A88FF2485394700412DD9 /* VNScanerCameraSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VNScanerCameraSetupVCExt.swift; sourceTree = "<group>"; };
 		267A890124854EC500412DD9 /* TableViewSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewSetupVCExt.swift; sourceTree = "<group>"; };
 		268DD1D32443BA4C00CFBC75 /* ScanBarcode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScanBarcode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		268DD1D62443BA4C00CFBC75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -72,13 +77,16 @@
 		268DD1F22443BA5100CFBC75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		268DD1FC2443C29100CFBC75 /* UIViewConstraintsExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewConstraintsExt.swift; sourceTree = "<group>"; };
 		268DD1FF2443C53E00CFBC75 /* BarcodeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeTableViewCell.swift; sourceTree = "<group>"; };
-		26C780E8244400E0000BCD07 /* CameraStartUpVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStartUpVCExt.swift; sourceTree = "<group>"; };
+		26AC7B3524907BB200E9547E /* CaptureOutputDelegateVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOutputDelegateVCExt.swift; sourceTree = "<group>"; };
+		26C780E8244400E0000BCD07 /* CameraSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSetupVCExt.swift; sourceTree = "<group>"; };
 		26CC28BC2483BA9700F52540 /* VNBarcodeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VNBarcodeDetector.swift; sourceTree = "<group>"; };
 		26CC28BE2483BD0300F52540 /* Globals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Globals.swift; sourceTree = "<group>"; };
+		26CF0DB424AC68DC00051952 /* DrawShapesVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawShapesVCExt.swift; sourceTree = "<group>"; };
 		26EA93122485D1F600D51CB8 /* MLBarcodeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLBarcodeDetector.swift; sourceTree = "<group>"; };
 		26EA93142485F4E400D51CB8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		26EA93162487297F00D51CB8 /* README.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = README.rtf; sourceTree = "<group>"; };
 		26F3A45B2488866D00C8D318 /* ButtonSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSetupVCExt.swift; sourceTree = "<group>"; };
+		26F491182490AEAD0096AF58 /* TextRecognitionVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognitionVCExt.swift; sourceTree = "<group>"; };
 		6337584DCFA6533928D79074 /* Pods_ScanBarcode.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ScanBarcode.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C75B6B1F54837E6FAE408D9 /* Pods-ScanBarcodeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScanBarcodeTests.debug.xcconfig"; path = "Target Support Files/Pods-ScanBarcodeTests/Pods-ScanBarcodeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		BDCA6448733680D988023F75 /* Pods-ScanBarcodeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ScanBarcodeTests.release.xcconfig"; path = "Target Support Files/Pods-ScanBarcodeTests/Pods-ScanBarcodeTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -149,7 +157,6 @@
 			children = (
 				26CC28BE2483BD0300F52540 /* Globals.swift */,
 				266CE32F248B146500515480 /* Math.swift */,
-				266CE332248B16A400515480 /* Alert.swift */,
 				262E0A6D2489D14E00DFC73D /* Networking */,
 				268DD1FB2443C26500CFBC75 /* Presenter */,
 				26C780E72444008E000BCD07 /* Model */,
@@ -181,11 +188,13 @@
 				267A88FD2485374D00412DD9 /* TVUpdateDelegateVCExt.swift */,
 				266844612444136500D1B95E /* TableViewControllerVCExt.swift */,
 				267A88FB24852F5900412DD9 /* MLKitCameraSetupVCExt.swift */,
-				267A88FF2485394700412DD9 /* VNCameraSetupVCExt.swift */,
-				26C780E8244400E0000BCD07 /* CameraStartUpVCExt.swift */,
+				267A88FF2485394700412DD9 /* VNScanerCameraSetupVCExt.swift */,
+				26C780E8244400E0000BCD07 /* CameraSetupVCExt.swift */,
 				26EA93122485D1F600D51CB8 /* MLBarcodeDetector.swift */,
 				26CC28BC2483BA9700F52540 /* VNBarcodeDetector.swift */,
 				266CE32D248B142300515480 /* UIApplicationExt.swift */,
+				26AC7B3524907BB200E9547E /* CaptureOutputDelegateVCExt.swift */,
+				26F491182490AEAD0096AF58 /* TextRecognitionVCExt.swift */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -198,6 +207,7 @@
 				267A890124854EC500412DD9 /* TableViewSetupVCExt.swift */,
 				268DD1DA2443BA4C00CFBC75 /* ViewController.swift */,
 				26F3A45B2488866D00C8D318 /* ButtonSetupVCExt.swift */,
+				26CF0DB424AC68DC00051952 /* DrawShapesVCExt.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -205,7 +215,9 @@
 		26C780E72444008E000BCD07 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				267A88F9248424F000412DD9 /* BarcodesModel.swift */,
+				266CE332248B16A400515480 /* Alert.swift */,
+				267A88F9248424F000412DD9 /* Barcodes.swift */,
+				2629198824DB899800FC756F /* BarcodeEvaluation.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -233,6 +245,7 @@
 				268DD1D02443BA4C00CFBC75 /* Frameworks */,
 				268DD1D12443BA4C00CFBC75 /* Resources */,
 				47D1C3F6C0279A9E382C08A9 /* [CP] Embed Pods Frameworks */,
+				61B15F41E07A96A65DD46AD2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -361,6 +374,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		61B15F41E07A96A65DD46AD2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ScanBarcode/Pods-ScanBarcode-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ScanBarcode/Pods-ScanBarcode-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ScanBarcode/Pods-ScanBarcode-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		AF2179EFB1E57A0A2E9111E8 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -390,7 +420,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				267A89002485394700412DD9 /* VNCameraSetupVCExt.swift in Sources */,
+				267A89002485394700412DD9 /* VNScanerCameraSetupVCExt.swift in Sources */,
+				26F491192490AEAD0096AF58 /* TextRecognitionVCExt.swift in Sources */,
 				267A88FC24852F5900412DD9 /* MLKitCameraSetupVCExt.swift in Sources */,
 				268DD1FD2443C29100CFBC75 /* UIViewConstraintsExt.swift in Sources */,
 				268DD1DB2443BA4C00CFBC75 /* ViewController.swift in Sources */,
@@ -398,13 +429,16 @@
 				262E0A6F2489D18600DFC73D /* SocketClient.swift in Sources */,
 				266CE333248B16A400515480 /* Alert.swift in Sources */,
 				26EA93132485D1F600D51CB8 /* MLBarcodeDetector.swift in Sources */,
+				26AC7B3624907BB200E9547E /* CaptureOutputDelegateVCExt.swift in Sources */,
 				268DD2002443C53E00CFBC75 /* BarcodeTableViewCell.swift in Sources */,
 				266844622444136500D1B95E /* TableViewControllerVCExt.swift in Sources */,
+				26CF0DB524AC68DC00051952 /* DrawShapesVCExt.swift in Sources */,
 				268DD1E12443BA4C00CFBC75 /* ScanBarcode.xcdatamodeld in Sources */,
-				267A88FA248424F000412DD9 /* BarcodesModel.swift in Sources */,
+				267A88FA248424F000412DD9 /* Barcodes.swift in Sources */,
+				2629198924DB899800FC756F /* BarcodeEvaluation.swift in Sources */,
 				268DD1D72443BA4C00CFBC75 /* AppDelegate.swift in Sources */,
 				26F3A45C2488866D00C8D318 /* ButtonSetupVCExt.swift in Sources */,
-				26C780E9244400E0000BCD07 /* CameraStartUpVCExt.swift in Sources */,
+				26C780E9244400E0000BCD07 /* CameraSetupVCExt.swift in Sources */,
 				267A88FE2485374D00412DD9 /* TVUpdateDelegateVCExt.swift in Sources */,
 				266CE32E248B142300515480 /* UIApplicationExt.swift in Sources */,
 				26CC28BF2483BD0300F52540 /* Globals.swift in Sources */,

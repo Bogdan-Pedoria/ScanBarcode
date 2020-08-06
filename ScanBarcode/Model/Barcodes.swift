@@ -18,7 +18,13 @@ let FUDGE_NAMES_FOR_DIGITS = [
     "8066": "Mk.Ch. PeanutButter Fudge",
     "3364": "Cookies&Cream Fudge",
     "3360": "RockyRoad Fudge",
-    "8100": "Heavenly Goo Fudge"
+    "8100": "Heavenly Goo Fudge",
+    "1360": "Root Beer Float Fudge",
+    "3359": "Mint Fudge",
+    "8067": "Divinity Fudge",
+    "3358": "Mk.Ch. Walnut Fudge",
+    "3371": "Maple Nut Fudge",
+    "8096": "Red Velvet Fudge"
 ]
 
 let PRODUCTS = [
@@ -31,8 +37,7 @@ enum ProductType: String, Codable {
 
 enum BarcodeType: String, Codable {
 //    case EAN8(Int?, Int?, Int?, Int?, Int?, Int?, Int?, Int?, Int?, Int?, Int?, Int?)
-    case EAN8
-    case QRCode
+    case FUDGE_BARCODE
     case unknown
 }
 
@@ -55,6 +60,7 @@ struct BarcodeData: Codable {
     var possibleErrorDuplicate = Bool() // MLkit READS WRONG PRICE DIGITS WITH RIGHT NAME DIGITS
 //    var arrangementNo = Int()
 //    var pairedByNameWithBarcodeNo: String?
+    var detectionRating = Int()
     
     enum CodingKeys: String, CodingKey {
         case barcodeNo
@@ -96,7 +102,7 @@ struct BarcodeData: Codable {
                 }
                 else {
                     if i == 11 {
-                        barcodeType = BarcodeType.EAN8
+                        barcodeType = BarcodeType.FUDGE_BARCODE
                     }
                 }
             }
@@ -165,7 +171,7 @@ struct BarcodeData: Codable {
     private func determineBarcodePrice(barcodeType: BarcodeType) -> Float {
         var price = Float()
         if detector == .MLKit {
-            if barcodeType == .EAN8 {
+            if barcodeType == .FUDGE_BARCODE {
                 var multiplier = Float(10)
                 for (i, digit) in barcodeNo.enumerated() {
                     if i > 6 && i < 11 {
@@ -180,7 +186,7 @@ struct BarcodeData: Codable {
         
         // VISION API PREPENDS 0 TO THE EAN8
         if detector == .VisionAPI {
-            if barcodeType == .EAN8 {
+            if barcodeType == .FUDGE_BARCODE {
                 var multiplier = Float(10)
                 for (i, digit) in barcodeNo.enumerated() {
                     if i > 7 && i < 12 {

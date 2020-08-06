@@ -6,6 +6,7 @@
 //  Copyright © 2020 Bohdan Pedoria. All rights reserved.
 //
 
+#warning("FIX DRY RULE HERE OR REMOVE VISION API DETECTION AT ALL")
 /*
     IN THIS FILE THE "DRY" RULE COMPLETELY BROKEN. IT IS DONE FOR CLARITY, BECUASE TWO DIFFERENT SDKs DETECT BARCODE, AND I NEED TO SEPARATE DICTIONARIES FROM THEM.
     TODO: FIX IT LATER
@@ -14,8 +15,6 @@
 import Foundation
 import UIKit
 
-///////////////////////////////////////////////////////////////////////////////////////
-////////////////////// Vision API ViewControllerExtension  ////////////////////////////
 /*
     EXTENSION TO UPDATE TABLE VIEW WHENEVER VISION API DETECTS BARCODE
  */
@@ -24,7 +23,7 @@ extension ViewController: TableViewUpdateDelegate {
         func didDetectVNBarcode(barcodeNo: String) {
             
             switch BarcodeData.determineBarcodeType(barcodeNo: barcodeNo) {// TO INSURE THAT ON THIS STAGE I WILL WORK ONLY WITH EAN8 -- FUDGE BARCODES TO MAKE DEVELOPMENT EASY
-            case .EAN8:
+            case .FUDGE_BARCODE:
                 self.updateVNBarcodes(barcodeNo: barcodeNo)
             default:
                 return
@@ -35,31 +34,66 @@ extension ViewController: TableViewUpdateDelegate {
     //        drawRectangleOnFrame(rectangle: rectangle) // deprecated google give wrong sized rectangles
         }
     
-    func didDetectMLBarcode(barcodeNo: String) {
-        
-        var reloadTableView = Bool()
-        
+    func didDetectMLBarcode(barcodeNo: String, barcodeFrame: CGRect) {
+                
         switch BarcodeData.determineBarcodeType(barcodeNo: barcodeNo) {// TO INSURE THAT ON THIS STAGE I WILL WORK ONLY WITH EAN8 -- FUDGE BARCODES TO MAKE DEVELOPMENT EASY
-        case .EAN8:
-            reloadTableView = self.updateMLBarcodes(barcodeNo: barcodeNo)
-        default:
-            return
+        case .FUDGE_BARCODE:
+            if self.updateMLBarcodes(barcodeNo: barcodeNo) {
+                self.markDetectedArea(barcodeFrame: barcodeFrame, barcodeNo: barcodeNo)
+                self.checkDetectorMatch()
+//                self.reloadTableView()
+                self.updateCounterButton(number: MLBarcodes.count)
+            }
+            self.updateBarcodeNumbersWithRating(barcodeNo: Int(barcodeNo)!)
+            self.filterBarcodeNumbersWithRating()
+            self.updateMLBarcodesRating()
+            self.reloadTableView()
+        case .unknown:
+            print("UNKNOWN BARCODE TYPE FOUND. should be just a detection error, ignore it")
         }
         
-        checkDetectorMatch()
 //        putErrorDuplicatesAllTogetherUp()
 //        bringPairedDuplicatesUp()
-        
-        if reloadTableView {
-            self.reloadTableView()
-            updateCounterButton(number: MLBarcodes.count)
-        }
-//        drawRectangleOnFrame(rectangle: rectangle) // deprecated google give wrong sized rectangles
     }
     
-    /*
-     TO CHECK IF TWO DETECTORS FOUND SAME VALUE
-     */
+    
+    func updateMLBarcodesRating() {
+        
+        for (barcodeNo, barcodeData) in MLBarcodes {
+            MLBarcodes[barcodeNo]!.detectionRating = barcodeNumbersWithRating[barcodeNo]!
+        }
+    }
+    
+    
+    func filterBarcodeNumbersWithRating() {
+        
+        var tenPercentFilteredBarcodes = BarcodesFilter.filterAllThatBelowErrorTreshold(barcodeNumbersWithRating: barcodeNumbersWithRating, errorPercent: 10)
+        var halfFilteredBarcodes = BarcodesFilter.filterAllThatBelowHalfOfBestRating(barcodeNumbersWithRating: barcodeNumbersWithRating)
+        var barcodeRatingData = BarcodesRatingEvaluator(barcodeNumbersWithRating: barcodeNumbersWithRating)
+        
+        debug("tenPercentFilteredBarcodes: \(tenPercentFilteredBarcodes)")
+        debug("HalfFilteredBarcodes: \(halfFilteredBarcodes)")
+        debug("barcodeRatingData:\(barcodeRatingData)")
+    }
+    
+    
+    /// Func to update barcodeNumbers
+    /// - Parameter barcodeNo: Int
+    func updateBarcodeNumbersWithRating(barcodeNo: Int) {
+        
+//        self.barcodeNumbers.append(barcodeNo)
+        if let rating = self.barcodeNumbersWithRating[barcodeNo] {
+            self.barcodeNumbersWithRating[barcodeNo] = rating + 1
+            debug("Updating barcodeNumber incremeting rating: \(rating + 1)\n\(self.barcodeNumbersWithRating)")
+        }
+        else {
+            self.barcodeNumbersWithRating[barcodeNo] = 0
+            debug("new barcode with no rating added \(barcodeNo)\n")
+        }
+    }
+    
+    
+    /// TO CHECK IF TWO DETECTORS FOUND SAME VALUE
     private func checkDetectorMatch() {
         // CHECKING MATCH -- IF BOTH DETECTORS FOUND SAME VALUE FOR BARCODE
         for (key, value) in self.MLBarcodes {
@@ -95,18 +129,22 @@ extension ViewController: TableViewUpdateDelegate {
             
             if didValidateBarcodeData(newBarcodeData) {
                 // MARK DUPLICATE WITH DIFFERENT PRICE IF WE HAVE THEM
+                //it was due to error: same barcode scanned twice but with the wrong price on one of the results
+                // and i probably disallowed this from happening at all(?)
 //                checkPossibleErrorDuplicates(newBarcodeData)
                 
                 MLBarcodes[key] = newBarcodeData
 
-                // TODO: MAKE SEPARATE FUNCTION IN THE Alert struct THAT NOTIFIES ABOUT NEW BARCODE
+                #warning("TODO: MAKE SEPARATE FUNCTION IN THE Alert struct THAT NOTIFIES ABOUT NEW BARCODE")
 //                Alert.showAlert(withTitle: "Price = $\(MLBarcodes[Int(barcodeNo)!]?.barcodePrice)", message: "Price = $\(MLBarcodes[Int(barcodeNo)!]?.productName)", buttonText: "Price is CORRECT", completion: { _ in
 //                    return
 //                })
+                return true
             }
         }
-        return true
+        return false
     }
+    
     
     private func updateVNBarcodes(barcodeNo: String) -> Bool {
         

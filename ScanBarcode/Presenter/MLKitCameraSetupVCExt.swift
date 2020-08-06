@@ -10,20 +10,20 @@ import Foundation
 import AVFoundation
 import UIKit
 
-/////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// EXTENSION TO START THE CAMERA ///////////////////////////
 /////////////////////////// AND BARCODE SCANNER WITH ///////////////////////////////
 /////////////////////////// PICTURE SETTINGS FOR MLKit //////////////////////////////
 
-extension ViewController {
+extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 ////////////////////////// SETTING CAMERA FOR MLKit ////////////////////////////////
     /*
         METHOD setMLKitCaptureSession to make frames suitable for MLKit
      */
    func setCaptureSessionForMLKit() {
-    captureSession.sessionPreset = .hd1920x1080
-//    captureSession.sessionPreset = .medium
+    
+        captureSession.sessionPreset = .hd1920x1080
         guard let backCamera = AVCaptureDevice.default(for: AVMediaType.video)
             else {
                 //TODO: HANDLE NO CAMERA PRESENT ON DEVICE CASE

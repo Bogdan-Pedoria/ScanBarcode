@@ -9,36 +9,51 @@
 import UIKit
 import AVFoundation
 import Firebase
+import FirebaseMLVision
 
 class ViewController: UIViewController {
 
+    // BLOCKING ROTATION
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        return .portrait
+    }
+    
     // TABLE VIEW
     let tableView = UITableView()
-    let tableViewInitialHeight = 400
-    let tableViewExpandHeight = 15
+    let tableViewSingleScanModeHeight = 400
+    let tableViewFullScreenScanModeHeight = 15
     
     // BUTTONS
     let buttonsHeight = 50
+    let counterButtonWidth = 50
     let sendButton = UIButton(type: .roundedRect) // TO SEND BARCODES TO SERVER
     let counterButton = UIButton(type: .custom) //round button to show number of barcodes scanned
+    let startStopButton = UIButton(type: .roundedRect) // to startStopScanning
     
     // CAMERA
-    let captureSession = AVCaptureSession()
-    //    var backCamera: AVCaptureDevice?
-//    let output = AVCaptureVideoDataOutput()
-    var previewLayer = AVCaptureVideoPreviewLayer()
-//    let stillImageOutput = AVCapturePhotoOutput()
+    lazy var captureSession = AVCaptureSession()
+    lazy var previewLayer = AVCaptureVideoPreviewLayer()
+    lazy var metadataOutput = AVCaptureMetadataOutput()
+    lazy var previewView = UIView()
     
     // DETECTORS
     let vnBarcodeDetector = VNBarcodeDetector()
     let mlBarcodeDetector = MLBarcodeDetector()
+    var isScanning = Bool() // flag to let user scan only when button "Scan" is being held
+    
+    // BARCODES
     var MLBarcodes = [Int: BarcodeData]()
     var VNBarcodes = [Int: BarcodeData]() // TO BE ABLE TO COMPARE RESULTS OF DETECTION
-
-
-    enum cells: String {
-        case barcodeCell = "barcodeCell"
-    }
+//    var barcodeNumbers = [Int]()
+    var barcodeNumbersWithRating = [Int: Int]()
+    
+    // ANNOTATIONS
+    let annotationRectangleHeight = 15
+    let borderWidth = 2.0
+    let subviewDeletionTag = 100
+    
+//    // TEXT RECOGNITION
+//    var textRecognizer: VisionTextRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,15 +62,20 @@ class ViewController: UIViewController {
         self.configureTableView()
         self.vnBarcodeDetector.barcodeDetectorDelegate = self
         self.mlBarcodeDetector.barcodeDetectorDelegate = self
+        
+//        // TEXT RECOGNIZER SETUP
+//        let vision = Vision.vision()
+//        textRecognizer = vision.onDeviceTextRecognizer()
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
         //TEMPORARY
         self.setCaptureSessionForMLKit()
         self.setLivePreview()
         self.startCamera()
-        self.setupSingleBarcodeDetectionModeView()
+//        self.scanOnlyRectArea()
+//        self.setupSingleBarcodeDetectionModeView()
         self.setupFullScreenDetectionModeView()
     }
-    
 }

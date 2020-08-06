@@ -20,6 +20,8 @@ class MLBarcodeDetector {
     lazy var vision = Vision.vision()
     
     func imageOrientation(deviceOrientation: UIDeviceOrientation, cameraPosition: AVCaptureDevice.Position) -> VisionDetectorImageOrientation {
+        
+        
         switch deviceOrientation {
         case .portrait:
             return cameraPosition == .front ? .leftTop : .rightTop
@@ -34,34 +36,44 @@ class MLBarcodeDetector {
         }
     }
     
-    func detectMLBarcode(sampleBuffer: CMSampleBuffer) {
+    func detectMLBarcode(sampleBuffer: CMSampleBuffer?=nil, image: UIImage?=nil) {
 
+        guard sampleBuffer != nil || image != nil else { return }
         let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
         let MLBarcodeDetector = self.vision.barcodeDetector(options: barcodeOptions)
-        let cameraPosition = AVCaptureDevice.Position.back
-        let metadata = VisionImageMetadata()
-        let image = VisionImage(buffer: sampleBuffer)
+//        let cameraPosition = AVCaptureDevice.Position.back
+//        let metadata = VisionImageMetadata()
+        var mlImage: VisionImage
+        if let buffer = sampleBuffer {
+            mlImage = VisionImage(buffer: buffer)
+        }
+        else {
+            mlImage = VisionImage(image: image!)
+        }
+//        metadata.orientation = imageOrientation(deviceOrientation: UIDevice.current.orientation, cameraPosition: cameraPosition)
+//        image.metadata = metadata
         
-        metadata.orientation = imageOrientation(deviceOrientation: UIDevice.current.orientation, cameraPosition: cameraPosition)
-        image.metadata = metadata
-        MLBarcodeDetector.detect(in: image, completion: { features, error in
-            guard error == nil, let MLBarcodes = features, !MLBarcodes.isEmpty else {
+        MLBarcodeDetector.detect(in: mlImage, completion: { features, error in
+            guard error == nil, let barcodes = features, !barcodes.isEmpty else {
                 return
             }
             
-            for barcode in MLBarcodes {
-//                let corners = barcode.cornerPoints //they are wrong -- maybe smth wrong with orientation in the method above
-                let valueType = barcode.valueType
+            for barcode in barcodes {
                 
-                switch valueType {
-                case .product:
+                let corners = barcode.cornerPoints
+                let barcodeFrame = barcode.frame
+//                let valueType = barcode.valueType
+                
+//                switch valueType {
+//                case .product:
                     let barcodeNo = barcode.displayValue
 //                    let barcodeNo = barcode.rawValue // IT WAS THE SAME
 //                    let type = barcode.format
-                    self.barcodeDetectorDelegate?.didDetectMLBarcode(barcodeNo: barcodeNo!)
-                default:
-                    print("NOT A PRODUCT BARCODE. valueType = \(valueType)")
-                }
+                    self.barcodeDetectorDelegate?.didDetectMLBarcode(barcodeNo: barcodeNo!, barcodeFrame: barcodeFrame)
+//                default:
+//                    print("NOT A PRODUCT BARCODE. valueType = \(valueType)")
+//                    AudioServicesPlayAlertSound(SystemSoundID(1050))
+//                }
                 
             }
         })
