@@ -57,25 +57,7 @@ class MLBarcodeDetector {
             guard error == nil, let barcodes = features, !barcodes.isEmpty else {
                 return
             }
-            
-            for barcode in barcodes {
-                
-                let corners = barcode.cornerPoints
-                let barcodeFrame = barcode.frame
-//                let valueType = barcode.valueType
-                
-//                switch valueType {
-//                case .product:
-                    let barcodeNo = barcode.displayValue
-//                    let barcodeNo = barcode.rawValue // IT WAS THE SAME
-//                    let type = barcode.format
-                    self.barcodeDetectorDelegate?.didDetectMLBarcode(barcodeNo: barcodeNo!, barcodeFrame: barcodeFrame)
-//                default:
-//                    print("NOT A PRODUCT BARCODE. valueType = \(valueType)")
-//                    AudioServicesPlayAlertSound(SystemSoundID(1050))
-//                }
-                
-            }
+            self.barcodeDetectorDelegate?.didDetectMLBarcodes(barcodes: barcodes)
         })
     }
     

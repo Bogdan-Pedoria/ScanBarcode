@@ -10,19 +10,23 @@ import Foundation
 import UIKit
 
 
+/* CONSTANTS */
+let MIN_DISTANCE_BETWEEN_BARCODES = 325
+/* END CONSTANTS */
+
 
 /////////////////////////////// SOCKET CONNECTION //////////////////////////////////
 let socketClient = SocketClient()
-//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+var historyBarcodes = [Date: [BarcodeData]]()
 
-// RECTANGLES TO IMAGE RATIO
-var screenToImageRatio: (_ imageSize: CGSize) -> Ratio = { imageSize in
-            
-    let xRatio = UIScreen.main.bounds.maxX / imageSize.width
-    let yRatio = UIScreen.main.bounds.maxY / imageSize.height
+
+struct Ratio {
     
-    return Ratio(xRatio: xRatio, yRatio: yRatio)
+    var xRatio = CGFloat()
+    var yRatio = CGFloat()
 }
+
 
 enum cells: String {
     case barcodeCell = "barcodeCell"
@@ -31,13 +35,6 @@ enum cells: String {
 enum ShutDownReason {
     case serverConnectionError
     case serverErrorAfterConnectionRetries
-}
-
-
-struct Ratio {
-    
-    var xRatio = CGFloat()
-    var yRatio = CGFloat()
 }
 
 /*
@@ -56,8 +53,9 @@ func shutAppDown(reason: ShutDownReason) {
     
     switch reason {
     case .serverErrorAfterConnectionRetries:
-        Alert.showAlertForServerErrorAfterConnectionRetries(buttonText: "EXIT", completion: { _ in
+        Alert.showAlertForServerErrorAfterConnectionRetries(buttonText: "RETRY", completion: { _ in
             exit(0)
+            
         })
     default:
         Alert.showExitAlert(message: "EXITING APP FOR UNKNOWN REASON")
@@ -72,3 +70,42 @@ func convert(_ cmage:CIImage) -> UIImage? {
 }
 
 
+func dateToString(_ date: Date) -> String {
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+    
+    return dateFormatter.string(from: date)
+}
+
+func formatDateToString(_ date: Date) -> String {
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy/MM/dd HH:mm"
+    dateFormatter.timeStyle = .medium
+    dateFormatter.dateStyle = .short
+    return dateFormatter.string(from: date)
+}
+
+func formatStringToDate(_ date: String) -> Date? {
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSZZZZZ"
+    //    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    //    dateFormatter.timeZone = TimeZone(identifier: "America/Los_Angeles")
+    //    dateFormatter.timeStyle = .medium
+    //    dateFormatter.dateStyle = .short
+    
+    return dateFormatter.date(from: date)
+}
+
+func timeStringFromDate(_ date: Date) -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "HH:mm"
+    return dateFormatter.string(from: date)
+}
+
+func datetimeNow() -> Date {
+    let dateInSeconds = Date().timeIntervalSinceReferenceDate
+    return Date(timeIntervalSinceReferenceDate: dateInSeconds)
+}

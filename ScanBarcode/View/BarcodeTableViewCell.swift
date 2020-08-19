@@ -19,13 +19,14 @@ class BarcodeTableViewCell: UITableViewCell {
         self.addSubview(titleLabel)
         self.setTitleLabel(text: "NoText")
         self.setTitleLabelConstraints()
-        self.setRatingView()
+        self.setRatingLabel()
     }
     
-    private func setRatingView() {
+    private func setRatingLabel() {
         self.addSubview(ratingLabel)
         self.setRatingLabelConstraints()
         self.ratingLabel.text = "0"
+        self.ratingLabel.font = UIFont.boldSystemFont(ofSize: 12)
 //        self.ratingLabel.backgroundColor = UIColor(displayP3Red: 1, green: 1, blue: 1, alpha: 0.3)
     }
     
@@ -40,7 +41,7 @@ class BarcodeTableViewCell: UITableViewCell {
     private func setRatingLabelConstraints() {
         ratingLabel.translatesAutoresizingMaskIntoConstraints = false
         ratingLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        ratingLabel.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -25).isActive = true
+        ratingLabel.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50).isActive = true
         ratingLabel.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         ratingLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
     }

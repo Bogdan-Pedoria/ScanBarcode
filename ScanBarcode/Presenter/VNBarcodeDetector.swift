@@ -26,12 +26,12 @@ class VNBarcodeDetector {
         })
     }()
     
-    private func evaluateBarcode(for request: VNRequest) -> String? {
-        
-        guard let results = request.results else {return nil}
-        let bestResult = results.first as? VNBarcodeObservation
-        return bestResult?.payloadStringValue
-    }
+//    private func evaluateBarcode(for request: VNRequest) -> String? {
+//
+//        guard let results = request.results else {return nil}
+//        let bestResult = results.first as? VNBarcodeObservation
+//        return bestResult?.payloadStringValue
+//    }
     
     func detectVNBarcode(coreImage: CIImage) {
         
@@ -42,8 +42,14 @@ class VNBarcodeDetector {
             //TODO: HANDLE THE BARCODE DETECTION ERROR
             print(" *** ERROR DETECTING BARCODE. Error \(error.localizedDescription)")
         }
-        if let barcodeNo = evaluateBarcode(for: self.detectBarcodeRequest) {
-            barcodeDetectorDelegate?.didDetectVNBarcode(barcodeNo: barcodeNo)
+        if let barcodeNumbers = self.detectBarcodeRequest.results {
+            for result in barcodeNumbers {
+                if let barcode = result as? VNBarcodeObservation {
+                    if let barcodeNo = barcode.payloadStringValue {
+                        barcodeDetectorDelegate?.didDetectVNBarcode(barcodeNo: barcodeNo)
+                    }
+                }
+            }
         }
     }
 }

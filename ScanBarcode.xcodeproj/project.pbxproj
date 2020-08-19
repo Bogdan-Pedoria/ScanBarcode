@@ -11,12 +11,14 @@
 		262E0A6F2489D18600DFC73D /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E0A6E2489D18600DFC73D /* SocketClient.swift */; };
 		262E0A702489D18600DFC73D /* SocketClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E0A6E2489D18600DFC73D /* SocketClient.swift */; };
 		266844622444136500D1B95E /* TableViewControllerVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266844612444136500D1B95E /* TableViewControllerVCExt.swift */; };
+		2669669724E2204900817886 /* Notes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2669669624E2204900817886 /* Notes.rtf */; };
+		2669669924E2318D00817886 /* TODOs.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2669669824E2318D00817886 /* TODOs.rtf */; };
+		2669669B24E26D8400817886 /* BarcodeManagerVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2669669A24E26D8300817886 /* BarcodeManagerVCExt.swift */; };
 		266CE32E248B142300515480 /* UIApplicationExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266CE32D248B142300515480 /* UIApplicationExt.swift */; };
 		266CE330248B146500515480 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266CE32F248B146500515480 /* Math.swift */; };
 		266CE333248B16A400515480 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266CE332248B16A400515480 /* Alert.swift */; };
 		267A88FA248424F000412DD9 /* Barcodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88F9248424F000412DD9 /* Barcodes.swift */; };
 		267A88FC24852F5900412DD9 /* MLKitCameraSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88FB24852F5900412DD9 /* MLKitCameraSetupVCExt.swift */; };
-		267A88FE2485374D00412DD9 /* TVUpdateDelegateVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88FD2485374D00412DD9 /* TVUpdateDelegateVCExt.swift */; };
 		267A89002485394700412DD9 /* VNScanerCameraSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A88FF2485394700412DD9 /* VNScanerCameraSetupVCExt.swift */; };
 		267A890224854EC500412DD9 /* TableViewSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A890124854EC500412DD9 /* TableViewSetupVCExt.swift */; };
 		268DD1D72443BA4C00CFBC75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268DD1D62443BA4C00CFBC75 /* AppDelegate.swift */; };
@@ -36,6 +38,7 @@
 		26EA93132485D1F600D51CB8 /* MLBarcodeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA93122485D1F600D51CB8 /* MLBarcodeDetector.swift */; };
 		26EA93152485F4E400D51CB8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 26EA93142485F4E400D51CB8 /* GoogleService-Info.plist */; };
 		26EA93172487297F00D51CB8 /* README.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 26EA93162487297F00D51CB8 /* README.rtf */; };
+		26EE5EDA24E8B7E2005D720C /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EE5ED924E8B7E2005D720C /* Point.swift */; };
 		26F3A45C2488866D00C8D318 /* ButtonSetupVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F3A45B2488866D00C8D318 /* ButtonSetupVCExt.swift */; };
 		26F491192490AEAD0096AF58 /* TextRecognitionVCExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F491182490AEAD0096AF58 /* TextRecognitionVCExt.swift */; };
 		312538BA1BC028B9F0965824 /* Pods_ScanBarcode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6337584DCFA6533928D79074 /* Pods_ScanBarcode.framework */; };
@@ -56,12 +59,14 @@
 		2629198824DB899800FC756F /* BarcodeEvaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeEvaluation.swift; sourceTree = "<group>"; };
 		262E0A6E2489D18600DFC73D /* SocketClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketClient.swift; sourceTree = "<group>"; };
 		266844612444136500D1B95E /* TableViewControllerVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewControllerVCExt.swift; sourceTree = "<group>"; };
+		2669669624E2204900817886 /* Notes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Notes.rtf; sourceTree = "<group>"; };
+		2669669824E2318D00817886 /* TODOs.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = TODOs.rtf; sourceTree = "<group>"; };
+		2669669A24E26D8300817886 /* BarcodeManagerVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeManagerVCExt.swift; sourceTree = "<group>"; };
 		266CE32D248B142300515480 /* UIApplicationExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExt.swift; sourceTree = "<group>"; };
 		266CE32F248B146500515480 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		266CE332248B16A400515480 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		267A88F9248424F000412DD9 /* Barcodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Barcodes.swift; sourceTree = "<group>"; };
 		267A88FB24852F5900412DD9 /* MLKitCameraSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLKitCameraSetupVCExt.swift; sourceTree = "<group>"; };
-		267A88FD2485374D00412DD9 /* TVUpdateDelegateVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVUpdateDelegateVCExt.swift; sourceTree = "<group>"; };
 		267A88FF2485394700412DD9 /* VNScanerCameraSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VNScanerCameraSetupVCExt.swift; sourceTree = "<group>"; };
 		267A890124854EC500412DD9 /* TableViewSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewSetupVCExt.swift; sourceTree = "<group>"; };
 		268DD1D32443BA4C00CFBC75 /* ScanBarcode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScanBarcode.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,6 +90,7 @@
 		26EA93122485D1F600D51CB8 /* MLBarcodeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLBarcodeDetector.swift; sourceTree = "<group>"; };
 		26EA93142485F4E400D51CB8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		26EA93162487297F00D51CB8 /* README.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = README.rtf; sourceTree = "<group>"; };
+		26EE5ED924E8B7E2005D720C /* Point.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
 		26F3A45B2488866D00C8D318 /* ButtonSetupVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonSetupVCExt.swift; sourceTree = "<group>"; };
 		26F491182490AEAD0096AF58 /* TextRecognitionVCExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognitionVCExt.swift; sourceTree = "<group>"; };
 		6337584DCFA6533928D79074 /* Pods_ScanBarcode.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ScanBarcode.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -169,6 +175,8 @@
 				268DD1DF2443BA4C00CFBC75 /* ScanBarcode.xcdatamodeld */,
 				26EA93142485F4E400D51CB8 /* GoogleService-Info.plist */,
 				26EA93162487297F00D51CB8 /* README.rtf */,
+				2669669624E2204900817886 /* Notes.rtf */,
+				2669669824E2318D00817886 /* TODOs.rtf */,
 			);
 			path = ScanBarcode;
 			sourceTree = "<group>";
@@ -185,7 +193,6 @@
 		268DD1FB2443C26500CFBC75 /* Presenter */ = {
 			isa = PBXGroup;
 			children = (
-				267A88FD2485374D00412DD9 /* TVUpdateDelegateVCExt.swift */,
 				266844612444136500D1B95E /* TableViewControllerVCExt.swift */,
 				267A88FB24852F5900412DD9 /* MLKitCameraSetupVCExt.swift */,
 				267A88FF2485394700412DD9 /* VNScanerCameraSetupVCExt.swift */,
@@ -195,6 +202,8 @@
 				266CE32D248B142300515480 /* UIApplicationExt.swift */,
 				26AC7B3524907BB200E9547E /* CaptureOutputDelegateVCExt.swift */,
 				26F491182490AEAD0096AF58 /* TextRecognitionVCExt.swift */,
+				2669669A24E26D8300817886 /* BarcodeManagerVCExt.swift */,
+				267A890124854EC500412DD9 /* TableViewSetupVCExt.swift */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -204,7 +213,6 @@
 			children = (
 				268DD1FF2443C53E00CFBC75 /* BarcodeTableViewCell.swift */,
 				268DD1FC2443C29100CFBC75 /* UIViewConstraintsExt.swift */,
-				267A890124854EC500412DD9 /* TableViewSetupVCExt.swift */,
 				268DD1DA2443BA4C00CFBC75 /* ViewController.swift */,
 				26F3A45B2488866D00C8D318 /* ButtonSetupVCExt.swift */,
 				26CF0DB424AC68DC00051952 /* DrawShapesVCExt.swift */,
@@ -218,6 +226,7 @@
 				266CE332248B16A400515480 /* Alert.swift */,
 				267A88F9248424F000412DD9 /* Barcodes.swift */,
 				2629198824DB899800FC756F /* BarcodeEvaluation.swift */,
+				26EE5ED924E8B7E2005D720C /* Point.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -322,6 +331,8 @@
 				268DD1E32443BA5000CFBC75 /* Assets.xcassets in Resources */,
 				26EA93172487297F00D51CB8 /* README.rtf in Resources */,
 				26EA93152485F4E400D51CB8 /* GoogleService-Info.plist in Resources */,
+				2669669924E2318D00817886 /* TODOs.rtf in Resources */,
+				2669669724E2204900817886 /* Notes.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,12 +450,13 @@
 				268DD1D72443BA4C00CFBC75 /* AppDelegate.swift in Sources */,
 				26F3A45C2488866D00C8D318 /* ButtonSetupVCExt.swift in Sources */,
 				26C780E9244400E0000BCD07 /* CameraSetupVCExt.swift in Sources */,
-				267A88FE2485374D00412DD9 /* TVUpdateDelegateVCExt.swift in Sources */,
 				266CE32E248B142300515480 /* UIApplicationExt.swift in Sources */,
 				26CC28BF2483BD0300F52540 /* Globals.swift in Sources */,
 				267A890224854EC500412DD9 /* TableViewSetupVCExt.swift in Sources */,
+				26EE5EDA24E8B7E2005D720C /* Point.swift in Sources */,
 				268DD1D92443BA4C00CFBC75 /* SceneDelegate.swift in Sources */,
 				266CE330248B146500515480 /* Math.swift in Sources */,
+				2669669B24E26D8400817886 /* BarcodeManagerVCExt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

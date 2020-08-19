@@ -1,9 +1,9 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2511
+{\rtf1\ansi\ansicpg1252\cocoartf2513
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red0\green116\blue0;
-}
+\red0\green0\blue0;\red93\green108\blue121;}
 {\*\expandedcolortbl;;\csgenericrgb\c0\c0\c0;\csgenericrgb\c100000\c100000\c100000;\csgenericrgb\c0\c45600\c0;
-}
+\csgenericrgb\c0\c0\c0\c85000;\csgenericrgb\c36526\c42188\c47515;}
 \margl1440\margr1440\vieww9000\viewh8400\viewkind0
 \deftab840
 \pard\tx840\pardeftab840\pardirnatural\partightenfactor0
@@ -15,4 +15,12 @@
 \
 3. \cf2 //\cf4 TODO: DO BarcodeData init WITH ADDITIONAL PARAMETER barcodeType from MLKit\
 \
-\cf2 4. \cf4 // TODO: CALL DETECTORS ON BACKGROUND THREAD AND LET THE captureOutput() METHOD GO -- PHONE IS MELTING}
+\cf2 4. \cf4 // TODO: CALL DETECTORS ON BACKGROUND THREAD AND LET THE captureOutput() METHOD GO -- PHONE IS MELTING. UPDATE: it was already on the backgroundThread, and frames are already dropping. so it was melting due to MLKit library\
+\
+5. 
+\fs24 \cf5         \cf6 //we will be sending multi scanned barcodes all together,\cf5 \
+\pard\tx593\pardeftab593\pardirnatural\partightenfactor0
+\cf5         \cf6 // therefore, func validateBarcodeRecognition(barcodeNo: String)\cf5 \
+        \cf6 // only for singleDetectionMode\
+\
+}

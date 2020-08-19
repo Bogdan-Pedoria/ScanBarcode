@@ -13,9 +13,9 @@ import UIKit
 struct Alert {
     
     ///////////////////////// GENERAL ALERT WITH THREE BUTTONS ////////////////////////
-    static func alert(title: String?=nil, message: String?=nil, accept: String?=nil, skip: String?=nil, cancel: String?=nil, acceptAction: ((UIAlertAction) -> Void )?=nil, skipAction: ((UIAlertAction) -> Void)?=nil, cancelAction: ((UIAlertAction) -> Void)?=nil) -> Void {
+    static func alert(on vc: UIViewController? = nil, title: String?=nil, message: String?=nil, accept: String?=nil, skip: String?=nil, cancel: String?=nil, acceptAction: ((UIAlertAction) -> Void )?=nil, skipAction: ((UIAlertAction) -> Void)?=nil, cancelAction: ((UIAlertAction) -> Void)?=nil, style: UIAlertController.Style = .alert) -> Void {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let alert = UIAlertController(title: title, message: message, preferredStyle: style)
             if accept != nil {
                 alert.addAction(UIAlertAction(title: accept, style: .cancel, handler: acceptAction))
             }
@@ -25,7 +25,9 @@ struct Alert {
             if cancel != nil {
                 alert.addAction(UIAlertAction(title: cancel, style: .destructive, handler: cancelAction))
             }
-            UIApplication.getTopViewController()?.present(alert, animated: true, completion: nil)
+            if let topVC = (vc ?? UIApplication.getTopViewController()) {
+                topVC.present(alert, animated: true, completion: nil)
+            }
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +51,31 @@ struct Alert {
     }
     ////////////////////////////////////////////////////////////////////////////////////
     
+    static func duplicateBarcodeAlert(on vc: UIViewController, barcodeText: String, acceptButtonAction: @escaping ((UIAlertAction)->Void), skipButtonAction: @escaping ((UIAlertAction)->Void)) {
+        var title = "SAME LABEL?"
+        var message = "Or you scanned it again?\n'\(barcodeText)' either has already been scanned or you have duplicate.\n DOUBLE CHECK, PLEASE."
+        var leftButtonText = "Skip"
+        var rightButtonText = "Rescan"
+        Alert.alert(on: vc, title: title, message: message, accept: leftButtonText, skip: rightButtonText, acceptAction: acceptButtonAction, skipAction: skipButtonAction, style: .alert)
+    }
+    
+    
+    static func didYouFinishScanningAlert(on vc: UIViewController,  acceptAction: @escaping ((UIAlertAction)->Void), skipAction: @escaping ((UIAlertAction)->Void)) {
+        var title = "Did you finish scanning?"
+//        var message = "Did you finish previous transaction?"
+        var leftButtonText = "YES"
+        var rightButtonText = "NO"
+        Alert.alert(on: vc, title: title, accept: leftButtonText, skip: rightButtonText, acceptAction: acceptAction, skipAction: skipAction, style: .alert)
+    }
+    
+    static func didFinishTransactionAlert(on vc: UIViewController,  acceptAction: @escaping ((UIAlertAction)->Void), skipAction: @escaping ((UIAlertAction)->Void)) {
+        var title = "DID YOU COMPLETE THIS TRANSACTION?"
+        var message = "Did you finish transaction? Do You begin new transaction?"
+        var leftButtonText = "YES"
+        var rightButtonText = "NO"
+        Alert.alert(on: vc, title: title, accept: leftButtonText, skip: rightButtonText, acceptAction: acceptAction, skipAction: skipAction, style: .alert)
+    }
+    
     //////////////////////////////// EXIT ALERT ////////////////////////////////////////
     static func showExitAlert(on vc: UIViewController?=nil, withTitle title: String = "Exiting the app", message: String, buttonText: String? = "Exit", completion: ((UIAlertAction)->Void)? = { _ in exit(0) }) {
         
@@ -64,9 +91,9 @@ struct Alert {
     ////////////////////////////////////////////////////////////////////////////////////
     
     ////////////////////////// SERVER ERROR AFTER RETRIES ALERT ////////////////////////
-    static func showAlertForServerErrorAfterConnectionRetries(on vc: UIViewController?=nil, buttonText: String?="OK", buttonStyle: UIAlertAction.Style = .destructive, completion: ((UIAlertAction)->Void)? = nil) {
+    static func showAlertForServerErrorAfterConnectionRetries(on vc: UIViewController?=nil, buttonText: String?="OK", buttonStyle: UIAlertAction.Style = .cancel, completion: ((UIAlertAction)->Void)? = nil) {
     
-        self.showAlert(on: vc, withTitle: "SERVER CONNECTION ERROR", message: "Could not connect to your register after multiple retries.", buttonText: buttonText, buttonStyle: buttonStyle, completion: completion)
+        self.showAlert(on: vc, withTitle: "SERVER CONNECTION ERROR", message: "Could not connect to your register.", buttonText: buttonText, buttonStyle: buttonStyle, completion: completion)
     }
     ///////////////////////////////////////////////////////////////////////////////////
     

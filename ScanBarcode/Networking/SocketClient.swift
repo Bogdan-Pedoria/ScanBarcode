@@ -13,14 +13,14 @@ import UIKit
 class SocketClient: NSObject, StreamDelegate{
     private var inputStream: InputStream!
     private var outputStream: OutputStream!
-    private var maxReadLength = 2048
-    private var port = 8018
-    private var ip = "192.168.137.1"
-    private var reconnect_tries = 2 // CHANGE TO FIVE
+    var MAX_READ_LENGTH = 2048
+    var PORT = 8018
+    var IP = "192.168.137.1"
+    private var reconnect_tries = 1 // CHANGE TO FIVE
     private var lastSentData: Data?
     var connectionIsEstablished: Bool?
     
-    init(ip: String="192.168.0.114") {
+    init(ip: String?=nil) {
 //        self.ip = ip
 //        self.ip = self.ip
     }
@@ -42,8 +42,8 @@ class SocketClient: NSObject, StreamDelegate{
         
         // 2
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault,
-                                           ip as CFString,
-                                           UInt32(port),
+                                           IP as CFString,
+                                           UInt32(PORT),
                                            &readStream,
                                            &writeStream)
         inputStream = readStream!.takeRetainedValue()
@@ -66,7 +66,6 @@ class SocketClient: NSObject, StreamDelegate{
             print("new message received")
         case Stream.Event.errorOccurred:
             print("\nCONNECTION ERROR OCCURED\n PROBABLY SERVER IS DOWN")
-            self.connectionIsEstablished = false
             self.tryToReconnect()
         case Stream.Event.hasSpaceAvailable:
             print("has space available")
@@ -80,11 +79,11 @@ class SocketClient: NSObject, StreamDelegate{
     
     private func readAvailableBytes(inputStream: InputStream) {
         //1
-        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: maxReadLength)
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: MAX_READ_LENGTH)
         //2
         while inputStream.hasBytesAvailable {
             //3
-            let numberOfBytesRead = inputStream.read(buffer, maxLength: maxReadLength)
+            let numberOfBytesRead = inputStream.read(buffer, maxLength: MAX_READ_LENGTH)
             
             //4
             if numberOfBytesRead < 0 {
@@ -107,8 +106,8 @@ print("\nstringArray = \(stringArray[0])")
             
             // 503 service unavailable
             // The server cannot handle the request (because it is overloaded or down for maintenance) (Wikipedia)
-            if stringArray[0] == "503" { // LENGTH OF DATA IS MORE THAN 9.99 MB
-                Alert.showAlert(withTitle: "DATA DID NOT SEND", message: "Try rescanning")
+            if stringArray[0] == "503" { // LENGTH OF DATA GOT MESSED UP and got decoded as MORE THAN 9.99 MB
+                Alert.showAlert(withTitle: "DATA DID NOT SEND", message: "Internal Server Error. Try rescanning")
                 self.tryToReconnect()
             }
             
@@ -169,7 +168,8 @@ print("DEBUG: outputStream \(outputStream?.streamStatus.rawValue),\n inputStream
     }
     
     func tryToReconnect() {
-
+        
+        self.connectionIsEstablished = false
         if self.reconnect_tries > 0 {
             print("TRYING TO RECONNECT...")
             print("Reconnect tries left: \(socketClient.reconnect_tries)\n")
@@ -178,7 +178,14 @@ print("DEBUG: outputStream \(outputStream?.streamStatus.rawValue),\n inputStream
             self.reconnect_tries -= 1
         }
         else {
-            shutAppDown(reason: ShutDownReason.serverErrorAfterConnectionRetries)
+//            shutAppDown(reason: ShutDownReason.serverErrorAfterConnectionRetries)
+            Alert.alert(title: "Connection Error", message: "Could Not Connect To Your Register", accept: "Retry", cancel: "EXIT") { [weak self](UIAlertAction) in
+                self?.reconnect_tries = 1
+                self?.tryToReconnect()
+            } cancelAction: { (UIAlertAction) in
+                exit(SYS_exit)
+            }
+
         }
     }
 }
