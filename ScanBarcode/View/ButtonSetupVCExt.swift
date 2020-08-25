@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import AVFoundation
 
 extension ViewController {
     
@@ -50,8 +51,8 @@ extension ViewController {
         self.scanBtn.layer.cornerRadius = 10
         self.scanBtn.clipsToBounds = true
 //        sendButton.setImage(UIImage(named: "NAME"), for: .normal)
-        self.scanBtn.addTarget(self, action: #selector(startScanning), for: .touchDown)
-        self.scanBtn.addTarget(self, action: #selector(stopScanning), for: .touchUpInside)
+        self.scanBtn.addTarget(self, action: #selector(scanButtonPressed), for: .touchDown)
+        self.scanBtn.addTarget(self, action: #selector(scanButtonUnpressed), for: .touchUpInside)
         self.scanBtn.backgroundColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.7)
         self.scanBtn.setTitleColor(.black, for: .normal)
         self.scanBtn.setTitle("HOLD TO SCAN", for: .normal)
@@ -61,30 +62,33 @@ extension ViewController {
     }
     
     ///////////////////////////// START SCANNING /////////////////////////////////////////
-    @objc func startScanning() {
+    @objc func scanButtonPressed() {
         
+        if !doNotRemoveBarcodes {
+            self.removeCurrentBarcodes()
+        }
+        else {
+            self.doNotRemoveBarcodes = false
+        }
         self.isScanning = true
     }
     ///////////////////////////////////////////////////////////////////////////////////////
     
     
     ///////////////////////////// STOP SCANNING /////////////////////////////////////////
-    @objc func stopScanning() {
+    @objc func scanButtonUnpressed() {
         
         self.isScanning = false
-//        let group = DispatchGroup()
-        if self.singleScanMode && MLBarcodes.count > 0 {
-            Alert.didYouFinishScanningAlert(on: self, acceptAction: { [weak self] (UIAlertAction) in
-//                group.enter()
-                self?.saveCurrentBarcodes()
-                self?.removeCurrentBarcodes()
-                self?.updateCounterButton()
-//                group.leave()
-            }, skipAction: { [weak self] (UIAlertAction) in
-//                group.enter()
-//                group.leave()
-            })
-//            group.wait()
+        if self.singleScanMode {
+//            Alert.didYouFinishTransactionAlert(on: self, acceptAction: { [weak self] (UIAlertAction) in
+//                self?.saveAndDeleteMLBarcodes()
+//                self?.updateCounterButton()
+//                }, skipAction: { [weak self] (UIAlertAction) in
+//            })
+        }
+        else {
+//            self.sendButtonTapped()
+//            self.counterButtonTapped()
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +97,7 @@ extension ViewController {
 //    func bringButtonsToFront() {
 //        
 //        self.view.bringSubviewToFront(self.scanBtn)
-//    }
+//    }self
     
 //    @objc func startStopButtonTapped() {
 //
@@ -139,21 +143,35 @@ extension ViewController {
         print("Send BUtton Tapped")
         guard let connection = socketClient.connectionIsEstablished, connection else { return }
         guard MLBarcodes.count != 0 else { return }
+        // TODO: REMOVE DO CATCH OR ALERT BECAUSE IF JSONEncoder FAILS IT MEANS IT IS THE CODE IS WRONG. OTHERWISE IT WONT HAPPEN. DONE!
         
-        // TODO: REMOVE DO CATCH OR ALERT BECAUSE IF JSONEncoder FAILS IT MEANS IT IS THE CODE IS WRONG. OTHERWISE IT WONT HAPPEN.
-        // DONE!
 //        do {
-            var mlBarcodesCopy = [Int: BarcodeData]()
-            if self.singleScanMode {
-                mlBarcodesCopy = self.filterBarcodesToSend()
-            }
+        var mlBarcodesCopy = [Int: BarcodeData]()
+        if let mlBarcodesCopy = self.filterBarcodesToSend() {
+            let jsonData = BarcodeData.encodeBarcodes(barcodes: mlBarcodesCopy)
             
-        if let encodedBarcodes = try? JSONEncoder().encode(mlBarcodesCopy) {
-            socketClient.sendData(encodedBarcodes)
-            #warning("DO I NEED THIS?(the following: updateCounter and reloadTable")
-//            updateCounterButton()
-//            self.reloadTableView()
+                socketClient.sendData(jsonData)
+                AudioServicesPlayAlertSound(SystemSoundID(1208))
+                #warning("DO I NEED THIS?(the following: updateCounter and reloadTable")
+    //            updateCounterButton()
+    //            self.reloadTableView()
+            for (barcodeNo, barcode) in mlBarcodesCopy {
+                self.MLBarcodes[barcodeNo]!.markIsBeingSent()
+            }
+            self.reloadTableView()
+//            AudioServicesPlayAlertSound(SystemSoundID(1211))//touch tone pound('#') key: it is vibrating, but maybe it is good to stop detection that way by messing up focus?
+            /// SHOWING BARCODES SENT ALERT
+            if !self.singleScanMode {
+                DispatchQueue.global(qos: .background).async {
+                    Alert.showBarcodesSentAlert()
+                }
+            }
         }
+        else {
+            
+            Alert.showAlert(withTitle: "DATA DID NOT SEND", message: "NothingToSendError. Try rescanning")
+        }
+        
             
             /// STOPPING SCANNER
 //            self.isScanning = false // was probably messing up scanning process
@@ -170,13 +188,6 @@ extension ViewController {
 //            print(error.localizedDescription)
 //            return
 //        }
-        
-        /// SHOWING BARCODES SENT ALERT
-        if !self.singleScanMode {
-            DispatchQueue.global(qos: .background).async {
-                Alert.showBarcodesSentAlert()
-            }
-        }
         
     }
     
@@ -199,13 +210,23 @@ extension ViewController {
     
     func updateCounterButton() {
         var count = Int()
-        for (barcodeNo, barcodeData) in self.MLBarcodes {
-            
-            if barcodeData.timesSent > 1 {
-                count += barcodeData.timesSent
+        if self.singleScanMode {
+            #warning("TODO: REDO? count according to number of duplicates too, if you will complete it right")
+            for (barcodeNo, barcodeData) in self.MLBarcodes {
+                
+                if barcodeData.isBeingSentTimes > 1 {
+                    count += barcodeData.isBeingSentTimes
+                }
+                else {
+                    count += 1
+                }
             }
-            else {
-                count += 1
+        }
+        else {
+            count = self.barcodesForTableView.count
+            // DEBUG
+            if count > 4 {
+                debug("Count > 4")
             }
         }
         counterButton.setTitle(String(count), for: .normal)
@@ -244,7 +265,7 @@ extension ViewController {
     func markSentAllBarcodes() {
         
         for (barcodeNo, barcodeData) in MLBarcodes {
-            MLBarcodes[barcodeNo]?.markSent()
+            MLBarcodes[barcodeNo]?.markIsBeingSent()
         }
     }
 }

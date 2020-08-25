@@ -58,6 +58,8 @@ var unknownTypeCount = Int()
     let mlBarcodeDetector = MLBarcodeDetector()
     var isScanning = Bool() // flag to let user scan only when button "Scan" is being held
 //    var areBarcodesSent = Bool()
+    // var to leave barcodes on the screen if duplicate Alert interrupted scanning
+    var doNotRemoveBarcodes = Bool()
     
     // BARCODES
     var MLBarcodes = [Int: BarcodeData]()
@@ -68,6 +70,7 @@ var unknownTypeCount = Int()
     var tenPercentPrecisionFilteredBarcodes = [Int: Int]()
     //to check duplicates on single frame for MultiBarcodeScanMode
     var originsOfOneFrame = [Int: Point]() //you have to update it every frame
+    var barcodesForTableView = [BarcodeData]()
     
     // ANNOTATIONS
     let annotationRectangleHeight = 15
@@ -79,6 +82,9 @@ var unknownTypeCount = Int()
 //    // TEXT RECOGNITION
 //    var textRecognizer: VisionTextRecognizer!
     
+    // SUBVIEWS
+    lazy var sideMenu = SideMenu(parentView: self.view)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -87,13 +93,18 @@ var unknownTypeCount = Int()
         self.vnBarcodeDetector.barcodeDetectorDelegate = self
         self.mlBarcodeDetector.barcodeDetectorDelegate = self
         
+        
 //        // TEXT RECOGNIZER SETUP
 //        let vision = Vision.vision()
 //        textRecognizer = vision.onDeviceTextRecognizer()
+        
+//        //CONFIGURING SIDE MENU
+//        self.sideMenu.place(on: self.view)
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
+        super.viewDidAppear(true)
         //TEMPORARY
         self.setCaptureSessionForMLKit()
         self.setLivePreview()
@@ -103,6 +114,11 @@ var unknownTypeCount = Int()
 //        self.setupFullScreenDetectionModeView()
         self.setupChangeModeButton()
         
+        //CONFIGURING SIDE MENU
+//        self.sideMenu.place()
+//        self.sideMenu.hide(delay: 3)
+        self.sideMenu.showOffBeforeUser()
+        
         // TIMER TO CLEAR UP THE OBSOLETE RECTANGLES.
         // TODO: BETTER TO REMOVE RECTANGLES
         // BY SAVING RECTANGES WITH DATE
@@ -111,4 +127,18 @@ var unknownTypeCount = Int()
         // THEM BY BarcdeNo(hashValue))
         Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.removeAllDrawings), userInfo: nil, repeats: true)
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+    
+//    @objc func hideSideMenu() {
+//
+//
+//            self.sideMenu.leftConstraint?.isActive = false
+//            self.sideMenu.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: -self.sideMenu.WIDTH)
+//        UIView.animate(withDuration: 3.0, delay: 3.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseOut, animations: {
+//
+//        }, completion: nil)
+//    }
 }

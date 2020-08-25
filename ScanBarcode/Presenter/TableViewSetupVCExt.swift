@@ -94,8 +94,8 @@ extension ViewController {
 //            else {
 //                self?.pinTableView(y: 0, bottomOffset: -(self?.buttonsHeight)!)
 //            }
-//            self?.tableView.backgroundColor = .clear
-//            self?.tableView.tableFooterView = UIView()
+            self?.tableView.backgroundColor = .clear
+            self?.tableView.tableFooterView = UIView()
             self?.removeScanBorder()
             self?.pinTableView(y: CGFloat(exactly: (self?.tableViewFullScreenScanModeHeight)!)!, height: screen.height - CGFloat((self?.buttonsHeight)! + 15)/*, bottomOffset: -(self?.buttonsHeight)!*/)
             self?.setupSendButton(x: Int((self?.tableView.bounds.width)!) - (self?.sendButtonWidth)!, y: Int(screen.height) - (self?.buttonsHeight)!) //50 height of the button

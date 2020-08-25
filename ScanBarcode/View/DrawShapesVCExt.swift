@@ -29,35 +29,6 @@ struct BorderRectangle {
 
 extension ViewController {
     
-    // RECTANGLES TO IMAGE RATIO
-    func screenToImageRatio (_ imageSize: CGSize) -> Ratio {
-                
-        let xRatio = UIScreen.main.bounds.maxX / imageSize.width
-        let yRatio = UIScreen.main.bounds.maxY / imageSize.height
-        
-        return Ratio(xRatio: xRatio, yRatio: yRatio)
-    }
-    
-    // RECTANGLES TO IMAGE RATIO
-    func imageToScreenRatio(_ imageSize: CGSize) -> Ratio {
-                
-        let xRatio = imageSize.width / UIScreen.main.bounds.maxX
-        let yRatio = imageSize.height / UIScreen.main.bounds.maxY
-        
-        return Ratio(xRatio: xRatio, yRatio: yRatio)
-    }
-    
-    func markDetectedArea(barcodeFrame: CGRect, barcodeNo: Int) {
-        
-        let newRatio = screenToImageRatio(CGSize(width: 1080, height: 1920))
-        let rectResizedAccordingToScreenSize = self.resizeRect(barcodeFrame, withRatio: newRatio)
-            self.drawRectangleForBarcode(rectangle: rectResizedAccordingToScreenSize, barcodeNo: barcodeNo)
-        if let barcode = MLBarcodes[barcodeNo] {
-            var barcodePrice = Double(barcode.barcodePrice)
-            barcodePrice = roundToHundredth(number: barcodePrice)
-            self.addPriceLabel(withText: String(barcodePrice), above: rectResizedAccordingToScreenSize, barcodeNo: barcodeNo)
-        }
-    }
     
     
     func drawSingeScanModeBorder() {
@@ -83,6 +54,45 @@ extension ViewController {
         self.drawRect(rectangle: self.borderRectangle.fakeCroppingRect, lineWidth: 1, lineColor: .init(gray: .init(1), alpha: 0.5), fillColor: nil, tag: tag)
     }
     
+    // RECTANGLES TO IMAGE RATIO
+    func screenToImageRatio (_ imageSize: CGSize) -> Ratio {
+                
+        let xRatio = UIScreen.main.bounds.maxX / imageSize.width
+        let yRatio = UIScreen.main.bounds.maxY / imageSize.height
+        
+        return Ratio(xRatio: xRatio, yRatio: yRatio)
+    }
+    
+    // RECTANGLES TO IMAGE RATIO
+    func imageToScreenRatio(_ imageSize: CGSize) -> Ratio {
+                
+        let xRatio = imageSize.width / UIScreen.main.bounds.maxX
+        let yRatio = imageSize.height / UIScreen.main.bounds.maxY
+        
+        return Ratio(xRatio: xRatio, yRatio: yRatio)
+    }
+    
+    
+    func markDetectedArea(barcodeFrame: CGRect, barcodeNo: Int) {
+        
+        let newRatio = screenToImageRatio(CGSize(width: 1080, height: 1920))
+        var rectResizedAccordingToScreenSize = self.resizeRect(barcodeFrame, withRatio: newRatio)
+        
+        // important: manually resizing rectangle because trying to finish fast
+        #warning("TODO: Stop resizing rectangle manually. Remove the following and replace with better logic")
+        if self.singleScanMode {
+            rectResizedAccordingToScreenSize = CGRect(x: rectResizedAccordingToScreenSize.origin.x + 80, y: rectResizedAccordingToScreenSize.origin.y + 120, width: rectResizedAccordingToScreenSize.width, height: rectResizedAccordingToScreenSize.height)
+        }
+        
+        if let barcode = MLBarcodes[barcodeNo] {
+            var barcodePrice = Double(barcode.barcodePrice)
+            barcodePrice = roundToHundredth(number: barcodePrice)
+            self.addPriceLabel(withText: String(barcodePrice), in: rectResizedAccordingToScreenSize, barcodeNo: barcodeNo)
+        }
+        self.drawRectangleForBarcode(rectangle: rectResizedAccordingToScreenSize, barcodeNo: barcodeNo)
+    }
+    
+    
     
     func drawRect(rectangle: CGRect, lineWidth: CGFloat, lineColor: CGColor? = nil, fillColor: CGColor? = nil, tag: String?=nil) {
         
@@ -101,11 +111,8 @@ extension ViewController {
     
     func drawRectangleForBarcode(rectangle: CGRect, barcodeNo: Int) {
         
-        #warning("TODO: very wrong, trying to finish fast: HAS TO REDO ALL LAYOUTS BY USING CONSTRAINTS AND RESTORE THEIR SIZES")
+        #warning("TODO: very wrong, did it trying to finish fast: HAS TO REDO ALL LAYOUTS BY USING CONSTRAINTS AND RESTORE THEIR SIZES")
         var rect = rectangle
-        if self.singleScanMode {
-            rect = CGRect(x: rectangle.origin.x + 80, y: rectangle.origin.y + 120, width: rectangle.width, height: rectangle.height)
-        }
         DispatchQueue.main.async {
             let rectLayer = CAShapeLayer()
             rectLayer.path = UIBezierPath(roundedRect: rect, cornerRadius: 0).cgPath
@@ -113,7 +120,13 @@ extension ViewController {
     //        rectLayer.backgroundColor = CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.0)
     //        rectLayer.fillColor = nil
             rectLayer.fillColor = CGColor(srgbRed: 1, green: 0, blue: 0, alpha: 0.3)
-            self.view.layer.insertSublayer(rectLayer, above: self.previewLayer)
+            
+            for (i, subView) in self.view.subviews.enumerated() {
+                // a way to make sure a price label is gone, because all of them have barcodeNo in tag
+                if /*self.barcodeNumbersWithRating[subView.tag] != nil &&*/ self.rectanglesForBarcodes[subView.tag] != nil {
+                    self.view.layer.insertSublayer(rectLayer, below: subView.layer/*self.previewLayer*/)
+                }
+            }
             //to save rectangle to be able to remove it later
             self.rectanglesForBarcodes[barcodeNo] = rectLayer.hashValue
 //            rectLayer.accessibilityValue = String(barcodeNo)
@@ -134,10 +147,10 @@ extension ViewController {
     }
         
         
-    func addPriceLabel(withText text: String, above rectangle: CGRect, barcodeNo: Int) {
+    func addPriceLabel(withText text: String, in rect/*angle*/: CGRect, barcodeNo: Int) {
         
         DispatchQueue.main.async {
-            let rect = self.makeAnnotationRect(from: rectangle)
+//            let rect = self.makeAnnotationRect(from: rectangle)
             //CREATING LABEL
             let label = UILabel(frame: rect)
             
@@ -155,12 +168,19 @@ extension ViewController {
             label.tag = barcodeNo
             
             // ADDING LABEL
-            self.view.insertSubview(label, aboveSubview: self.previewView)
+            self.view.insertSubview(label, belowSubview: self.tableView)
+//            for (i, layer) in self.view.layer.sublayers!.enumerated() {
+//                for (barcodeNo, hashValue) in self.rectanglesForBarcodes {
+//                    if hashValue == layer.hashValue {
+//                        self.view.insertSubview(label, belowSubview: self.tableView)
+//                    }
+//                }
+//            }
         }
     }
     
     
-    func removeBarcodeMarks(barcodeNo: Int/*, layerHashValue: Int*/) {
+    func removeVisualBarcodeMarks(barcodeNo: Int/*, layerHashValue: Int*/) {
         
         if let layerHashValue = rectanglesForBarcodes[barcodeNo] {
             self.removeBarcodeRectangle(layerHashValue: layerHashValue)

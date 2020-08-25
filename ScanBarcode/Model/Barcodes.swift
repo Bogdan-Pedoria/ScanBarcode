@@ -9,6 +9,8 @@
 import Foundation
 
 
+
+
 let PRICES = [
     ProductType.Fudge : Double(23.96)
 ]
@@ -65,13 +67,20 @@ struct BarcodeData: Codable {
 //    var possibleErrorDuplicate = Bool() // MLkit READS WRONG PRICE DIGITS WITH RIGHT NAME DIGITS
 //    var arrangementNo = Int()
 //    var pairedByNameWithBarcodeNo: String?
-    var detectionRating = Int()
-    var isSent: Bool? //nil: to know it has not been sent at all
-    var sentDate = Date()
-    var timesSent = Int() // > 1 means hasDuplicate for singleScanMode at least
+    var detectionRating: Int?
+    var isBeingSent: Bool? //nil: to know it has not been sent at all
+    var isBeingSentDate = Date()
+    var isBeingSentTimes = Int() // > 1 means hasDuplicate (for singleScanMode at least)
     var hasBeenSent: Bool?
     var origin: Point
     var hasDuplicate = Bool()
+    var isDuplicate = Bool()
+    
+    // 0 means has no duplicates.
+    // 1 means it is original(first)\
+    // barcode that has at least\
+    // one duplicate
+    var numberOfDuplicates = Int()
 //    var duplicate: [Int?: BarcodeData?]
     
     enum CodingKeys: String, CodingKey {
@@ -86,13 +95,15 @@ struct BarcodeData: Codable {
         case productType
 //        case possibleErrorDuplicate
         case detectionRating
-        case isSent
-        case sentDate
-        case timesSent
+        case isBeingSent
+        case isBeingSentDate
+        case isBeingSentTimes
         case MLKitVisionAPIMatch
         case hasBeenSent
         case origin
         case hasDuplicate
+        case isDuplicate
+        case numberOfDuplicates
 //        case duplicate
 //        case arrangementNo
 //        case pairedByNameWithBarcodeNo
@@ -100,28 +111,33 @@ struct BarcodeData: Codable {
     
     
     // TODO: DO init WITH ADDITIONAL PARAMETER barcodeType from MLKit
-    init(barcodeNo: String, id: Int, detector: Detector, rectangleOrigin: Point) {
+    init(barcodeNo: String, id: Int, detector: Detector, rectangleOrigin: Point, isDuplicate: Bool, detectionRating: Int? = 0) {
+        // if isDuplicate, it should have prefix of one digit
+        var tempBarcodeNo = barcodeNo
+        if isDuplicate {
+            self.isDuplicate = isDuplicate
+            tempBarcodeNo = String(barcodeNo.dropFirst())
+        }
         self.id = id
-//        self.arrangementNo = id // INITIAL SETUP. THEN IT WILL CHANGE BY IMPORTANCE
-        self.barcodeNo = barcodeNo
         self.detector = detector
-        self.barcodeType = .unknown
+        self.barcodeType = BarcodeData.determineBarcodeType(barcodeNo: tempBarcodeNo, detector: detector)
         self.origin = rectangleOrigin
-        self.productName = self.determineBarcodeName()
-        self.productType = self.determineProductType()
-        self.barcodeType = BarcodeData.determineBarcodeType(barcodeNo: self.barcodeNo, detector: detector)
-        self.barcodePrice = self.determineBarcodePrice(barcodeType: self.barcodeType)
-        self.quantity = self.calculateQuantity()
+        self.detectionRating = detectionRating
+        self.productName = BarcodeData.determineBarcodeName(barcodeNo: tempBarcodeNo, detector: detector)
+        self.productType = BarcodeData.determineProductType(barcodeNo: tempBarcodeNo, detector: detector)
+//        self.barcodeType = BarcodeData.determineBarcodeType(barcodeNo: self.barcodeNo, detector: detector)
+        self.barcodePrice = BarcodeData.determineBarcodePrice(barcodeNo: tempBarcodeNo, barcodeType: self.barcodeType, detector: detector)
+        if productType != nil {
+            self.quantity = BarcodeData.calculateQuantity(productType: self.productType!, barcodePrice: self.barcodePrice)
+        }
+        self.barcodeNo = barcodeNo
     }
     
     
-    func calculateQuantity() -> Double {
+    static func encodeBarcodes(barcodes: [Int:BarcodeData]) -> Data {
         
-        var quantity = Double()
-        if let prodType = self.productType, prodType == .Fudge {
-            quantity = Double(self.barcodePrice) / (PRICES[prodType]!)
-        }
-        return quantity
+        let encodedBarcodes = try! JSONEncoder().encode(barcodes)
+        return encodedBarcodes
     }
     
     
@@ -202,7 +218,7 @@ struct BarcodeData: Codable {
         
         var barcodeType = BarcodeType.unknown
         guard BarcodeData.checkFirstTwoDigits(barcodeNo: barcodeNo, detector: detector) else { return barcodeType }
-        if barcodeNo.count <= 13 { //BECAUSE VisionAPI prepends 0 TO THE BarcodeNo
+        if detector != .VisionAPI { //BECAUSE VisionAPI prepends 0 TO THE BarcodeNo
             for (i, char) in barcodeNo.enumerated() {
                 if !char.isWholeNumber {
                     break
@@ -217,10 +233,35 @@ struct BarcodeData: Codable {
         return barcodeType
     }
     
-    private mutating func getNameDigits() -> String {
+    
+    static func makeBarcodeNoForDuplicate(barcodeNo: Int, numberOfDuplicate: Int) -> Int {
+        
+        let numberOfZeros = makeIntThatIsOldButAllDigitsAreZerosWith1InFront(oldInt: barcodeNo)
+        let prefix = numberOfDuplicate * numberOfZeros
+        let barcodeNumberForDuplicate = prefix + barcodeNo
+        return barcodeNumberForDuplicate
+    }
+    
+//    mutating func setOrigin(origin: Point) {
+//        self.origin = origin
+//    }
+    
+    
+    static func calculateQuantity(productType: ProductType, barcodePrice: Float) -> Double {
+        
+        var quantity = Double()
+        if productType == .Fudge {
+            quantity = Double(barcodePrice) / (PRICES[productType]!)
+        }
+        return quantity
+    }
+    
+    
+    static func getNameDigits(barcodeNo: String, detector: Detector) -> String {
+        
         var nameDigits = String()
-        if self.detector == .MLKit {
-            for (i, digit) in self.barcodeNo.enumerated() {
+        if detector == .MLKit {
+            for (i, digit) in barcodeNo.enumerated() {
                 if i > 1 && i < 6 {
                     nameDigits.append(digit)
                 }
@@ -228,8 +269,8 @@ struct BarcodeData: Codable {
         }
         
         // VISION API PREPENDS 0 TO THE EAN8
-        if self.detector == .VisionAPI {
-            for (i, digit) in self.barcodeNo.enumerated() {
+        if detector == .VisionAPI {
+            for (i, digit) in barcodeNo.enumerated() {
                 if i > 2 && i < 7 {
                     nameDigits.append(digit)
                 }
@@ -238,16 +279,16 @@ struct BarcodeData: Codable {
         return nameDigits
     }
     
-    private mutating func determineProductType() -> ProductType? {
+    static func determineProductType(barcodeNo: String, detector: Detector) -> ProductType? {
         var nameDigits = String()
         var type: ProductType?
         
-        nameDigits = getNameDigits()
+        nameDigits = getNameDigits(barcodeNo: barcodeNo, detector: detector)
         type = getProductType(forNameDigits: nameDigits)
         return type
     }
     
-    private func getProductType(forNameDigits nameDigits: String) -> ProductType? {
+    static func getProductType(forNameDigits nameDigits: String) -> ProductType? {
         var type: ProductType?
         for (_productType, value) in PRODUCTS {
             if value[nameDigits] != nil {
@@ -258,16 +299,16 @@ struct BarcodeData: Codable {
         return type
     }
     
-    private mutating func determineBarcodeName() -> String? {
+    static func determineBarcodeName(barcodeNo: String, detector: Detector) -> String? {
         var nameDigits = String()
         var name: String?
         
-        nameDigits = getNameDigits()
+        nameDigits = getNameDigits(barcodeNo: barcodeNo, detector: detector)
         name = getMatchName(for: nameDigits)
         return name
     }
     
-    private func getMatchName(for nameDigits: String) -> String? {
+    static func getMatchName(for nameDigits: String) -> String? {
         var name: String?
         if let _name = FUDGE_NAMES_FOR_DIGITS[nameDigits] {
             name = _name
@@ -275,7 +316,7 @@ struct BarcodeData: Codable {
         return name
     }
     
-    private mutating func determineBarcodePrice(barcodeType: BarcodeType) -> Float {
+    static func determineBarcodePrice(barcodeNo: String, barcodeType: BarcodeType, detector: Detector) -> Float {
         var price = Float()
         if detector == .MLKit {
             if barcodeType == .FUDGE_BARCODE {
@@ -309,21 +350,21 @@ struct BarcodeData: Codable {
     }
     
     
-    mutating func markSent() {
+    mutating func markIsBeingSent() {
         
-        self.isSent = true
-        self.sentDate = datetimeNow()
-        self.timesSent += 1
+        self.isBeingSent = true
+        self.isBeingSentDate = datetimeNow()
+        self.isBeingSentTimes += 1
 //        self.quantity += 1
     }
     
     
     func didOneSecondsPass() -> Bool {
 
-        print("LastSentDate = \(self.sentDate)")
+        print("LastSentDate = \(self.isBeingSentDate)")
         print("timeNow = \(datetimeNow())")
-        if datetimeNow().timeIntervalSince(self.sentDate) > 1 {
-            debug("ComparisonResult = \(datetimeNow().timeIntervalSince(self.sentDate))")
+        if datetimeNow().timeIntervalSince(self.isBeingSentDate) > 1 {
+            debug("ComparisonResult = \(datetimeNow().timeIntervalSince(self.isBeingSentDate))")
             return true
         }
         return false
@@ -332,8 +373,8 @@ struct BarcodeData: Codable {
     
     func didTwoSecondsPass() -> Bool {
         
-        if datetimeNow().timeIntervalSince(self.sentDate) > 2 {
-            debug("ComparisonResult = \(datetimeNow().timeIntervalSince(self.sentDate))")
+        if datetimeNow().timeIntervalSince(self.isBeingSentDate) > 2 {
+            debug("ComparisonResult = \(datetimeNow().timeIntervalSince(self.isBeingSentDate))")
             return true
         }
         return false
@@ -345,7 +386,7 @@ struct BarcodeData: Codable {
         
         self.didPassValidation = false
         self.MLKitVisionAPIMatch = false
-        self.isSent = false
+        self.isBeingSent = false
         self.detectionRating = 0
     }
     
@@ -360,7 +401,7 @@ struct BarcodeData: Codable {
         
         var future = datetimeNow() - seconds
         debug("comparison of sendDate to datetimeNow() + 3 seconds: \(datetimeNow().timeIntervalSince(future)))")
-        self.sentDate = future
+        self.isBeingSentDate = future
     }
     
 }

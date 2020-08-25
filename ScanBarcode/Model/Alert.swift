@@ -52,16 +52,16 @@ struct Alert {
     ////////////////////////////////////////////////////////////////////////////////////
     
     static func duplicateBarcodeAlert(on vc: UIViewController, barcodeText: String, acceptButtonAction: @escaping ((UIAlertAction)->Void), skipButtonAction: @escaping ((UIAlertAction)->Void)) {
-        var title = "SAME LABEL?"
-        var message = "Or you scanned it again?\n'\(barcodeText)' either has already been scanned or you have duplicate.\n DOUBLE CHECK, PLEASE."
-        var leftButtonText = "Skip"
-        var rightButtonText = "Rescan"
+        var title = "ARE YOU SCANNING SAME LABEL?"
+        var message = "'\(barcodeText)' either has already been scanned or you have a duplicate."
+        var leftButtonText = "YES"
+        var rightButtonText = "NO, RESCAN"
         Alert.alert(on: vc, title: title, message: message, accept: leftButtonText, skip: rightButtonText, acceptAction: acceptButtonAction, skipAction: skipButtonAction, style: .alert)
     }
     
     
-    static func didYouFinishScanningAlert(on vc: UIViewController,  acceptAction: @escaping ((UIAlertAction)->Void), skipAction: @escaping ((UIAlertAction)->Void)) {
-        var title = "Did you finish scanning?"
+    static func didYouFinishTransactionAlert(on vc: UIViewController,  acceptAction: @escaping ((UIAlertAction)->Void), skipAction: @escaping ((UIAlertAction)->Void)) {
+        var title = "Did you finish transaction?"
 //        var message = "Did you finish previous transaction?"
         var leftButtonText = "YES"
         var rightButtonText = "NO"

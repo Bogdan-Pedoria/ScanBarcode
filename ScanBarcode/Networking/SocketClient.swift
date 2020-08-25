@@ -66,7 +66,7 @@ class SocketClient: NSObject, StreamDelegate{
             print("new message received")
         case Stream.Event.errorOccurred:
             print("\nCONNECTION ERROR OCCURED\n PROBABLY SERVER IS DOWN")
-            self.tryToReconnect()
+            self.askToReconnectOrExit()
         case Stream.Event.hasSpaceAvailable:
             print("has space available")
         default:
@@ -108,7 +108,7 @@ print("\nstringArray = \(stringArray[0])")
             // The server cannot handle the request (because it is overloaded or down for maintenance) (Wikipedia)
             if stringArray[0] == "503" { // LENGTH OF DATA GOT MESSED UP and got decoded as MORE THAN 9.99 MB
                 Alert.showAlert(withTitle: "DATA DID NOT SEND", message: "Internal Server Error. Try rescanning")
-                self.tryToReconnect()
+                self.askToReconnectOrExit()
             }
             
             // 500 Internal Server Error
@@ -167,27 +167,37 @@ print("DEBUG: outputStream \(outputStream?.streamStatus),\n inputStream \(inputS
 print("DEBUG: outputStream \(outputStream?.streamStatus.rawValue),\n inputStream \(inputStream?.streamStatus.rawValue)")
     }
     
+    func askToReconnectOrExit() {
+        
+        
+//            shutAppDown(reason: ShutDownReason.serverErrorAfterConnectionRetries)
+        Alert.alert(title: "Connection Error", message: "Could Not Connect To Your Register", accept: "Retry", cancel: "EXIT", acceptAction: { [self](UIAlertAction) in
+            self.reconnect_tries = 1
+            self.tryToReconnect()
+            print("IN ALERT ACCEPT BUTTON: TryingToReconnect()")
+        }, cancelAction: { (UIAlertAction) in
+            exit(SYS_exit)
+        })
+    }
+    
     func tryToReconnect() {
         
+        
+            print("TRYING TO RECONNECT...")
         self.connectionIsEstablished = false
         if self.reconnect_tries > 0 {
-            print("TRYING TO RECONNECT...")
             print("Reconnect tries left: \(socketClient.reconnect_tries)\n")
             self.closeSocket()
             self.setupNetworkCommunication()
             self.reconnect_tries -= 1
         }
         else {
-//            shutAppDown(reason: ShutDownReason.serverErrorAfterConnectionRetries)
-            Alert.alert(title: "Connection Error", message: "Could Not Connect To Your Register", accept: "Retry", cancel: "EXIT") { [weak self](UIAlertAction) in
-                self?.reconnect_tries = 1
-                self?.tryToReconnect()
-            } cancelAction: { (UIAlertAction) in
+            Alert.alert(title: "Could Not Reconnect", message: "Could Not Reconnect To Your Register", cancel: "EXIT", cancelAction: { (UIAlertAction) in
                 exit(SYS_exit)
-            }
-
+            })
         }
     }
+    
 }
 
 

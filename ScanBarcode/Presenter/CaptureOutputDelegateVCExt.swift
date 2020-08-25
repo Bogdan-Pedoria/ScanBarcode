@@ -16,7 +16,7 @@ extension ViewController {
     
     
     func captureOutput(_ output: AVCaptureOutput, didDrop sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        print("DID DROP FRAME")
+//        print("DID DROP FRAME")
     }
     
         //////////////// CAPTURING PHOTO AND DETECTING BARCODE ////////////////////////////////
@@ -50,7 +50,7 @@ extension ViewController {
     /// END DEBUG
         
         // BARCODE DETECTION
-        mlBarcodeDetector.detectMLBarcode(image: image)
+        mlBarcodeDetector.detectMLBarcodes(image: image)
         
         // PROCESS IMAGE WITH Vision API
         vnBarcodeDetector.detectVNBarcode(coreImage: ciImage)

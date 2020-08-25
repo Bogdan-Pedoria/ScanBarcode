@@ -36,7 +36,7 @@ class MLBarcodeDetector {
         }
     }
     
-    func detectMLBarcode(sampleBuffer: CMSampleBuffer?=nil, image: UIImage?=nil) {
+    func detectMLBarcodes(sampleBuffer: CMSampleBuffer?=nil, image: UIImage?=nil) {
 
         guard sampleBuffer != nil || image != nil else { return }
         let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)

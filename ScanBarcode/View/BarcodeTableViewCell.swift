@@ -11,7 +11,7 @@ import UIKit
 class BarcodeTableViewCell: UITableViewCell {
     
     var titleLabel = UILabel()
-    var ratingLabel = UILabel()
+    var priceLabel = UILabel() //it is on the right
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -19,14 +19,15 @@ class BarcodeTableViewCell: UITableViewCell {
         self.addSubview(titleLabel)
         self.setTitleLabel(text: "NoText")
         self.setTitleLabelConstraints()
-        self.setRatingLabel()
+        self.setPriceLabel()
     }
     
-    private func setRatingLabel() {
-        self.addSubview(ratingLabel)
-        self.setRatingLabelConstraints()
-        self.ratingLabel.text = "0"
-        self.ratingLabel.font = UIFont.boldSystemFont(ofSize: 12)
+    private func setPriceLabel() {
+        self.addSubview(priceLabel)
+        self.setPriceLabelConstraints()
+        self.priceLabel.text = "0"
+        self.priceLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        self.priceLabel.textColor = .black
 //        self.ratingLabel.backgroundColor = UIColor(displayP3Red: 1, green: 1, blue: 1, alpha: 0.3)
     }
     
@@ -35,15 +36,15 @@ class BarcodeTableViewCell: UITableViewCell {
         titleLabel.adjustsFontSizeToFitWidth    = true
 //        titleLabel.text                         = text
         titleLabel.text                         = "NO BARCODE"
-
+        titleLabel.textColor = .black
     }
     
-    private func setRatingLabelConstraints() {
-        ratingLabel.translatesAutoresizingMaskIntoConstraints = false
-        ratingLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        ratingLabel.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50).isActive = true
-        ratingLabel.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-        ratingLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+    private func setPriceLabelConstraints() {
+        priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        priceLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        priceLabel.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -65).isActive = true
+        priceLabel.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+        priceLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
     }
     
     private func setTitleLabelConstraints() {
