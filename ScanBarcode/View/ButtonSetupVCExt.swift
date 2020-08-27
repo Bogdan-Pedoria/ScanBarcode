@@ -13,17 +13,24 @@ import AVFoundation
 extension ViewController {
     
 
-    func setupChangeModeButton(x: Int=0, y: Int=15) {
+    func setupChangeModeButton(x: Int=0, y: Int=0) {
         
-        changeModeButton.frame = CGRect(x: x, y: y, width: 50, height: 50)
+        changeModeButton.frame = CGRect(x: CGFloat(x), y: CGFloat(y), width: CGFloat(50), height: CGFloat(self.buttonsHeight))
         changeModeButton.layer.cornerRadius = 0.5 * counterButton.bounds.size.width
         changeModeButton.clipsToBounds = true
         changeModeButton.addTarget(self, action: #selector(changeModeButtonTapped), for: .touchUpInside)
         changeModeButton.backgroundColor = UIColor(displayP3Red: 0.0, green: 0.0, blue: 0.0, alpha: 0.7)
-        changeModeButton.setTitle("c", for: .normal)
+        changeModeButton.setTitle("M", for: .normal)
         changeModeButton.setTitleColor(.white, for: .normal)
-        self.view.addSubview(changeModeButton)
-        self.view.bringSubviewToFront(changeModeButton)
+        
+//        self.view.addSubview(changeModeButton)
+//        self.view.bringSubviewToFront(changeModeButton)
+        //REPLACING WITH
+//        self.sideMenu.childView.addSubview(changeModeButton)
+        //REPLACING WITH
+        if self.sideMenu.buttons != nil {
+            self.sideMenu.buttons.append(changeModeButton)
+        }
     }
     
     @objc func changeModeButtonTapped() {
@@ -33,14 +40,15 @@ extension ViewController {
             self.singleScanMode = false
             self.setupFullScreenDetectionModeView()
             
-            // had to do it here for now
-            // TODO: REDO
-            self.view.bringSubviewToFront(self.changeModeButton)
         }
         else {
             self.singleScanMode = true
             self.setupSingleBarcodeDetectionModeView()
         }
+        // had to do it here for now
+        // TODO: REDO
+        self.view.bringSubviewToFront(self.sideMenu)
+        self.sideMenu.showOrHide()
     }
     
     
@@ -141,7 +149,8 @@ extension ViewController {
     @objc func sendButtonTapped() {
         
         print("Send BUtton Tapped")
-        guard let connection = socketClient.connectionIsEstablished, connection else { return }
+        AudioServicesPlayAlertSound(SystemSoundID(1211))
+        guard socketClient.connectionIsEstablished else { return }
         guard MLBarcodes.count != 0 else { return }
         // TODO: REMOVE DO CATCH OR ALERT BECAUSE IF JSONEncoder FAILS IT MEANS IT IS THE CODE IS WRONG. OTHERWISE IT WONT HAPPEN. DONE!
         
@@ -151,27 +160,28 @@ extension ViewController {
             let jsonData = BarcodeData.encodeBarcodes(barcodes: mlBarcodesCopy)
             
                 socketClient.sendData(jsonData)
-                AudioServicesPlayAlertSound(SystemSoundID(1208))
+//            if singleScanMode {
+//                AudioServicesPlayAlertSound(SystemSoundID(1211))//touch tone pound('#') key: it is vibrating, but maybe it is good to stop detection that way by messing up focus?
                 #warning("DO I NEED THIS?(the following: updateCounter and reloadTable")
+//            }
     //            updateCounterButton()
     //            self.reloadTableView()
             for (barcodeNo, barcode) in mlBarcodesCopy {
                 self.MLBarcodes[barcodeNo]!.markIsBeingSent()
             }
             self.reloadTableView()
-//            AudioServicesPlayAlertSound(SystemSoundID(1211))//touch tone pound('#') key: it is vibrating, but maybe it is good to stop detection that way by messing up focus?
             /// SHOWING BARCODES SENT ALERT
             if !self.singleScanMode {
-                DispatchQueue.global(qos: .background).async {
+//                DispatchQueue.global(qos: .background).async {
+//                    AudioServicesPlayAlertSound(SystemSoundID(1108))
                     Alert.showBarcodesSentAlert()
-                }
+//                }
             }
         }
         else {
             
             Alert.showAlert(withTitle: "DATA DID NOT SEND", message: "NothingToSendError. Try rescanning")
         }
-        
             
             /// STOPPING SCANNER
 //            self.isScanning = false // was probably messing up scanning process

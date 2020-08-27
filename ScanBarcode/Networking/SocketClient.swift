@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import AVFoundation
 
 class SocketClient: NSObject, StreamDelegate{
     private var inputStream: InputStream!
@@ -18,11 +19,14 @@ class SocketClient: NSObject, StreamDelegate{
     var IP = "192.168.137.1"
     private var reconnect_tries = 1 // CHANGE TO FIVE
     private var lastSentData: Data?
-    var connectionIsEstablished: Bool?
+    var connectionIsEstablished = Bool()
+    var timer = Timer()
     
     init(ip: String?=nil) {
+        super.init()
 //        self.ip = ip
 //        self.ip = self.ip
+//        self.checkIfConnectionIsNotEstablishedInFiveSeconds()
     }
     
 //    init(ip: String, port: Int, maxReadLength: Int, appName: String){
@@ -34,6 +38,24 @@ class SocketClient: NSObject, StreamDelegate{
 //        print("DEBUG: SOCKET url = \(self.socketURL)")
 //        debug(String(describing: socketURL))
 //    }
+    
+    @objc private func checkIfConnectionIsNotEstablished() {
+debug("DEBUG: outputStream \(outputStream?.streamStatus),\n inputStream \(inputStream?.streamStatus)")
+debug("DEBUG: outputStream \(outputStream?.streamStatus.rawValue),\n inputStream \(inputStream?.streamStatus.rawValue)")
+        if !self.connectionIsEstablished {
+            if !timer.isValid {
+                timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.askToReconnectOrExit), userInfo: nil, repeats: false)
+            }
+            else {
+            }
+        }
+        else if self.connectionIsEstablished {
+            timer.invalidate()
+        }
+        else {
+            
+        }
+    }
     
     func setupNetworkCommunication() {
         // 1
@@ -55,22 +77,24 @@ class SocketClient: NSObject, StreamDelegate{
         outputStream.schedule(in: .current, forMode: .common)
         inputStream.open()
         outputStream.open()
+        timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(self.checkIfConnectionIsNotEstablished), userInfo: nil, repeats: false)
     }
     
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         switch eventCode {
         case Stream.Event.hasBytesAvailable:
-            print("new message received")
+            debug("new message received")
             readAvailableBytes(inputStream: aStream as! InputStream)
         case Stream.Event.endEncountered:
-            print("new message received")
+            debug("new message received")
         case Stream.Event.errorOccurred:
-            print("\nCONNECTION ERROR OCCURED\n PROBABLY SERVER IS DOWN")
+            debug("\nCONNECTION ERROR OCCURED\n PROBABLY SERVER IS DOWN")
             self.askToReconnectOrExit()
         case Stream.Event.hasSpaceAvailable:
-            print("has space available")
+            debug("has space available")
         default:
-            print("CONNECTION IS ESTABLISHED")
+//            Alert.connectionIsEstablishedAlert()
+            debug("CONNECTION IS ESTABLISHED")
             self.connectionIsEstablished = true
             self.reconnect_tries = 1
             break
@@ -102,7 +126,7 @@ class SocketClient: NSObject, StreamDelegate{
             }
             
 //remove
-print("\nstringArray = \(stringArray[0])")
+debug("\nstringArray = \(stringArray[0])")
             
             // 503 service unavailable
             // The server cannot handle the request (because it is overloaded or down for maintenance) (Wikipedia)
@@ -113,7 +137,7 @@ print("\nstringArray = \(stringArray[0])")
             
             // 500 Internal Server Error
             //A generic error message, given when an unexpected condition was encountered and no more specific message is suitable (WIKIPEDIA)
-            if stringArray[0] == "500" { //SERVER COULD NOT DECODE JSON
+            else if stringArray[0] == "500" { //SERVER COULD NOT DECODE JSON
                 // TODO: REVIEW AND ADD TRY CATCH OR THROW ERROR OR MAKE SERVER SENT BETTER ERROR MESSAGES OR DO ANYTHING TO MAKE IT BETTER
                 // RESEND ON YOUR OWN -- BECAUSE IT HAPPENS SOMETIMES, AND AFTER RESENDING, ASK USER TO RESAND OR RESCAN
                 if let sentData = lastSentData {
@@ -125,6 +149,9 @@ print("\nstringArray = \(stringArray[0])")
                     Alert.showAlert(withTitle: "DATA DID NOT SEND", message: "Try rescanning")
                 }
             }
+            else { //success? probably ot
+                
+            }
         }
     }
   
@@ -133,7 +160,7 @@ print("\nstringArray = \(stringArray[0])")
         lastSentData = data
         ///////////// SENDING  WITH LENGTH /////////////
         ////////////////////
-print("DEBUG: SENDING SIZE.\nDEBUG: in Socket.sendData(): data weight = \(data.count)\n data = \(data)")
+debug("DEBUG: SENDING SIZE.\nDEBUG: in Socket.sendData(): data weight = \(data.count)\n data = \(data)")
         /////////////////////
         let dataSize: Int = data.count
         var size = withUnsafeBytes(of: dataSize.bigEndian, Array.init)//MAC AND WINDOWS HAS LITTLE ENDIAN. JUST NOTICE. SENDING AND RECEIVING BIG ENDIAN JUST BECAUSE.
@@ -146,7 +173,8 @@ print("DEBUG: SENDING SIZE.\nDEBUG: in Socket.sendData(): data weight = \(data.c
         let altogether = lengthDataArray + dataArray
 //        outputStream.write(altogether, maxLength: dataArray.count) //SUCH A COVARD ERROR. LEFT FOR MEMORY.
         outputStream.write(altogether, maxLength: altogether.count)
-
+        
+//        AudioServicesPlayAlertSound(SystemSoundID(1211))
         //SIMPLE WAY no length is being sent -- unreliable
 //        let dataArray = [UInt8](data)
 //        outputStream.write(dataArray, maxLength: dataArray.count)
@@ -154,27 +182,28 @@ print("DEBUG: SENDING SIZE.\nDEBUG: in Socket.sendData(): data weight = \(data.c
     
     
     func closeSocket() {
-        let closingKey = "\0\0\0\0".data(using: .utf8)!
-        self.sendData(closingKey)
+        debug("DEBUG: outputStream \(outputStream?.streamStatus),\n inputStream \(inputStream?.streamStatus)")
+        debug("DEBUG: outputStream \(outputStream?.streamStatus.rawValue),\n inputStream \(inputStream?.streamStatus.rawValue)")
+        if connectionIsEstablished {
+            let closingKey = "\0\0\0\0".data(using: .utf8)!
+            self.sendData(closingKey)
+        }
         inputStream.close()
         outputStream.close()
         inputStream.remove(from: .current, forMode: .common)
         outputStream.remove(from: .current, forMode: .common)
         if !((outputStream?.streamStatus) != nil) && !((inputStream?.streamStatus) != nil) {
-
-print("DEBUG: outputStream \(outputStream?.streamStatus),\n inputStream \(inputStream?.streamStatus)")
         }
-print("DEBUG: outputStream \(outputStream?.streamStatus.rawValue),\n inputStream \(inputStream?.streamStatus.rawValue)")
     }
     
-    func askToReconnectOrExit() {
+    @objc func askToReconnectOrExit() {
         
         
 //            shutAppDown(reason: ShutDownReason.serverErrorAfterConnectionRetries)
         Alert.alert(title: "Connection Error", message: "Could Not Connect To Your Register", accept: "Retry", cancel: "EXIT", acceptAction: { [self](UIAlertAction) in
-            self.reconnect_tries = 1
+            self.reconnect_tries += 1
             self.tryToReconnect()
-            print("IN ALERT ACCEPT BUTTON: TryingToReconnect()")
+            debug("IN ALERT ACCEPT BUTTON: TryingToReconnect()")
         }, cancelAction: { (UIAlertAction) in
             exit(SYS_exit)
         })
@@ -183,19 +212,24 @@ print("DEBUG: outputStream \(outputStream?.streamStatus.rawValue),\n inputStream
     func tryToReconnect() {
         
         
-            print("TRYING TO RECONNECT...")
-        self.connectionIsEstablished = false
+        debug("TRYING TO RECONNECT...")
+//        self.connectionIsEstablished = false
         if self.reconnect_tries > 0 {
-            print("Reconnect tries left: \(socketClient.reconnect_tries)\n")
             self.closeSocket()
             self.setupNetworkCommunication()
             self.reconnect_tries -= 1
+            debug("Reconnect tries left: \(socketClient.reconnect_tries)\n")
         }
         else {
             Alert.alert(title: "Could Not Reconnect", message: "Could Not Reconnect To Your Register", cancel: "EXIT", cancelAction: { (UIAlertAction) in
                 exit(SYS_exit)
             })
         }
+    }
+    
+    deinit {
+        debug("IN DEINIT: Closing socket")
+        self.closeSocket()
     }
     
 }

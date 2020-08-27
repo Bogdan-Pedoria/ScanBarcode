@@ -51,6 +51,12 @@ struct Alert {
     }
     ////////////////////////////////////////////////////////////////////////////////////
     
+    static func connectionIsEstablishedAlert() {
+        
+        var title = "Connection established"
+        Alert.showAlert(withTitle: title, style: .alert)
+    }
+    
     static func duplicateBarcodeAlert(on vc: UIViewController, barcodeText: String, acceptButtonAction: @escaping ((UIAlertAction)->Void), skipButtonAction: @escaping ((UIAlertAction)->Void)) {
         var title = "ARE YOU SCANNING SAME LABEL?"
         var message = "'\(barcodeText)' either has already been scanned or you have a duplicate."

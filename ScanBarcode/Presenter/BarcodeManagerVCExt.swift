@@ -155,7 +155,7 @@ extension ViewController {
         
         /// to make sure the previous detector match wont work next time
         if let detectorMatch = self.VNBarcodes[barcodeNo]?.MLKitVisionAPIMatch, detectorMatch {
-                    VNBarcodes.removeValue(forKey: barcodeNo)
+                VNBarcodes.removeValue(forKey: barcodeNo)
             }
         }
     }
@@ -235,6 +235,9 @@ extension ViewController {
         }
         else  {
             newBarcode = BarcodeData(barcodeNo: String(barcodeNo), id: id, detector: .MLKit, rectangleOrigin: origin, isDuplicate: false)
+        }
+        if newBarcode.productName == nil || newBarcode.productType == nil {
+            return false
         }
         if MLBarcodes[barcodeNo] == nil {
             MLBarcodes[barcodeNo] = newBarcode

@@ -39,6 +39,9 @@ var unknownTypeCount = Int()
     let scanBtn = UIButton(type: .roundedRect) // to startStopScanning
     let changeModeButton = UIButton(type: .custom)
     
+    // GESTURES
+    lazy var tapGesture = UITapGestureRecognizer(target: self.tableView, action: #selector(changeModeButtonTapped))
+    
     // CAMERA
     lazy var captureSession = AVCaptureSession()
     lazy var previewLayer = AVCaptureVideoPreviewLayer()
@@ -92,7 +95,6 @@ var unknownTypeCount = Int()
         self.configureTableView()
         self.vnBarcodeDetector.barcodeDetectorDelegate = self
         self.mlBarcodeDetector.barcodeDetectorDelegate = self
-        
         
 //        // TEXT RECOGNIZER SETUP
 //        let vision = Vision.vision()
